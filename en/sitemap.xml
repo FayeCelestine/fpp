@@ -41,6 +41,18 @@
                 href="https://fayecelestine.github.io/fpp/en/page/"
                 />
   </url><url>
+    <loc>https://fayecelestine.github.io/fpp/en/about/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://fayecelestine.github.io/fpp/%E5%85%B3%E4%BA%8E/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://fayecelestine.github.io/fpp/en/about/"
+                />
+  </url><url>
     <loc>https://fayecelestine.github.io/fpp/en/categories/</loc>
     <xhtml:link
                 rel="alternate"

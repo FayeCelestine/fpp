@@ -15,6 +15,15 @@
         <guid>https://fayecelestine.github.io/fpp/en/archives/</guid>
         <description></description>
         </item>
+        <item>
+        <title>About</title>
+        <link>https://fayecelestine.github.io/fpp/en/about/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://fayecelestine.github.io/fpp/en/about/</guid>
+        <description>&lt;p&gt;This is a test page.&lt;/p&gt;
+</description>
+        </item>
         
     </channel>
 </rss>
