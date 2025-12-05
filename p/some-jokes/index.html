@@ -621,47 +621,63 @@
     
     function initWaifuMouseEvent() {
         const waifu = document.getElementById("waifu");
+        if (!waifu) return;
+
         let isDown = false;
-        let waifuLeft;
-        let mouseLeft;
-        let waifuTop;
-        let mouseTop;
+        let startX, startY;
+        let startLeft, startTop;
+
         
-        waifu.onmousedown = function (e) {
+        function dragStart(x, y) {
             isDown = true;
-            
-            waifuLeft = waifu.offsetLeft;
-            mouseLeft = e.clientX;
-            
-            waifuTop = waifu.offsetTop;
-            mouseTop = e.clientY;
+            startX = x;
+            startY = y;
+            startLeft = waifu.offsetLeft;
+            startTop = waifu.offsetTop;
         }
+
         
-        window.onmousemove = function (e) {
-            if (!isDown) {
-                return;
-            }
+        function dragMove(x, y) {
+            if (!isDown) return;
+
+            let newLeft = startLeft + (x - startX);
+            let newTop = startTop + (y - startY);
+
             
-            let currentLeft = waifuLeft + (e.clientX - mouseLeft);
-            if (currentLeft < 0) {
-                currentLeft = 0;
-            } else if (currentLeft > window.innerWidth - 300) {
-                currentLeft = window.innerWidth - 300;
-            }
-            waifu.style.left = currentLeft  + "px";
-            
-            let currentTop = waifuTop + (e.clientY - mouseTop);
-            if (currentTop < 30) {
-                currentTop = 30
-            } else if (currentTop > window.innerHeight - 290) {
-                currentTop = window.innerHeight - 290
-            }
-            waifu.style.top = currentTop + "px";
+            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - 300));
+            newTop = Math.max(30, Math.min(newTop, window.innerHeight - 290));
+
+            waifu.style.left = newLeft + "px";
+            waifu.style.top = newTop + "px";
         }
+
         
-        window.onmouseup = function (e) {
+        waifu.addEventListener("mousedown", (e) => {
+            dragStart(e.clientX, e.clientY);
+        });
+
+        window.addEventListener("mousemove", (e) => {
+            dragMove(e.clientX, e.clientY);
+        });
+
+        window.addEventListener("mouseup", () => {
             isDown = false;
-        }
+        });
+
+        
+        waifu.addEventListener("touchstart", (e) => {
+            const t = e.touches[0];
+            dragStart(t.clientX, t.clientY);
+        });
+
+        window.addEventListener("touchmove", (e) => {
+            const t = e.touches[0];
+            dragMove(t.clientX, t.clientY);
+        });
+
+        window.addEventListener("touchend", () => {
+            isDown = false;
+        });
     }
 
 </script>
