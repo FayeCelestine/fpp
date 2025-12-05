@@ -507,6 +507,10 @@
                 tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"]
             });
             initWaifuMouseEvent(); 
+
+            
+            setTimeout(autoScaleWaifu, 1000);
+            window.addEventListener("resize", autoScaleWaifu); 
         });
     }
 
@@ -571,6 +575,24 @@
         window.addEventListener("touchend", () => {
             isDown = false;
         });
+    }
+
+
+    
+    function autoScaleWaifu() {
+        const canvas = document.getElementById("live2d");
+        if (!canvas) return;
+
+        let scale = 1; 
+
+        if (window.innerWidth <= 480) {
+            scale = 0.55; 
+        } else if (window.innerWidth <= 768) {
+            scale = 0.75; 
+        }
+
+        canvas.style.transform = `scale(${scale})`;
+        canvas.style.transformOrigin = "bottom right";  
     }
 
 </script>
