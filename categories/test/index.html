@@ -470,73 +470,100 @@
     }());
 </script>
 <script>
-        
-
-
     
+    const live2d_path = "https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/";
     
-    const live2d_path = 'https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.0-rc.6/dist/';
-    
+    const cssPath = "https://fayecelestine.github.io/fpp/waifu/waifu.css";
+    const waifuTipsJsonPath = "https://fayecelestine.github.io/fpp/waifu/waifu-tips.json";
+    const live2dMinJsPath = "https://fayecelestine.github.io/fpp/waifu/live2d.min.js";
+    const tipsJsPath = "https://fayecelestine.github.io/fpp/waifu/waifu-tips.js";
 
-    const cssPath = "https://fayecelestine.github.io/fpp/waifu/waifu.css"
-    const waifuTipsJsonPath = "https://fayecelestine.github.io/fpp/waifu/waifu-tips.json"
-
-    
     
     function loadExternalResource(url, type) {
-    return new Promise((resolve, reject) => {
-        let tag;
+        return new Promise((resolve, reject) => {
+            let tag;
 
-        if (type === 'css') {
-        tag = document.createElement('link');
-        tag.rel = 'stylesheet';
-        tag.href = url;
-        }
-        else if (type === 'js') {
-        tag = document.createElement('script');
-        tag.type = 'module';
-        tag.src = url;
-        }
-        if (tag) {
-        tag.onload = () => resolve(url);
-        tag.onerror = () => reject(url);
-        document.head.appendChild(tag);
-        }
-    });
+            if (type === "css") {
+                tag = document.createElement("link");
+                tag.rel = "stylesheet";
+                tag.href = url;
+            }
+            else if (type === "js") {
+                tag = document.createElement("script");
+                tag.src = url;
+            }
+            if (tag) {
+                tag.onload = () => resolve(url);
+                tag.onerror = () => reject(url);
+                document.head.appendChild(tag);
+            }
+        });
     }
 
-    (async () => {
     
-    
-    
+    if (screen.width >= 768) {
+        Promise.all([
+            loadExternalResource(cssPath, "css"),
+            loadExternalResource(live2dMinJsPath, "js"),
+            loadExternalResource(tipsJsPath, "js")
+        ]).then(() => {
+            
+            initWidget({
+                waifuPath: waifuTipsJsonPath,
+                
+                cdnPath: "https://cdn.jsdelivr.net/gh/FayeCelestine/static-resource@v1.0.0",
+                tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"]
+            });
+            initWaifuMouseEvent(); 
+        });
+    }
+
 
     
-    
-    const OriginalImage = window.Image;
-    window.Image = function(...args) {
-        const img = new OriginalImage(...args);
-        img.crossOrigin = "anonymous";
-        return img;
-    };
-    window.Image.prototype = OriginalImage.prototype;
-    
-    
-    await Promise.all([
-        loadExternalResource(cssPath, 'css'),
-        loadExternalResource(live2d_path + 'waifu-tips.js', 'js')
-    ]);
-    
-    
-    initWidget({
-        waifuPath: waifuTipsJsonPath,
-        cdnPath: 'https://cdn.jsdelivr.net/gh/FayeCelestine/static-resource@v1.0.0',
-        cubism2Path: live2d_path + 'live2d.min.js',
-        cubism5Path: 'https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js',
-        tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
-        logLevel: 'warn',
-        drag: false,
-    });
-    })();
+    function initWaifuMouseEvent() {
+        const waifu = document.getElementById("waifu");
+        let isDown = false;
+        let waifuLeft;
+        let mouseLeft;
+        let waifuTop;
+        let mouseTop;
+        
+        waifu.onmousedown = function (e) {
+            isDown = true;
+            
+            waifuLeft = waifu.offsetLeft;
+            mouseLeft = e.clientX;
+            
+            waifuTop = waifu.offsetTop;
+            mouseTop = e.clientY;
+        }
+        
+        window.onmousemove = function (e) {
+            if (!isDown) {
+                return;
+            }
+            
+            let currentLeft = waifuLeft + (e.clientX - mouseLeft);
+            if (currentLeft < 0) {
+                currentLeft = 0;
+            } else if (currentLeft > window.innerWidth - 300) {
+                currentLeft = window.innerWidth - 300;
+            }
+            waifu.style.left = currentLeft  + "px";
+            
+            let currentTop = waifuTop + (e.clientY - mouseTop);
+            if (currentTop < 30) {
+                currentTop = 30
+            } else if (currentTop > window.innerHeight - 290) {
+                currentTop = window.innerHeight - 290
+            }
+            waifu.style.top = currentTop + "px";
+        }
+        
+        window.onmouseup = function (e) {
+            isDown = false;
+        }
+    }
 
 </script>
     </body>
