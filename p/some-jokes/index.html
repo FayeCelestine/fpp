@@ -287,6 +287,1688 @@
         
             
                 
+  <link href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css" rel="stylesheet">
+  <style>
+     
+
+    .weather-card {
+      width: 280px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      position: relative;
+    }
+    .weather-card.expanded {
+       
+      width: 320px; 
+      cursor: default;
+    }
+
+     
+    .weather-small {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+    }
+    .w-left, .w-right { flex-shrink: 0; }
+    .w-mid { flex-grow: 1; margin-left: 10px; }
+    .weather-icon { font-size: 24px; }
+    .weather-city { font-size: 14px; font-weight: bold; }
+    .weather-now { font-size: 12px; opacity: 0.7; }
+    .weather-temp { font-size: 28px; font-weight: 300; }
+
+     
+    .control-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 12px;
+      height: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 10px;
+      z-index: 10;
+    }
+    .control-btn:hover { opacity: 1; }
+    .expand-btn::after { content:""; width:8px; height:8px; border:2px solid #888; border-radius:4px; display:block; }  
+    .collapse-btn::after { content:""; width:10px; height:2px; background:#888; border-radius:1px; display:block; position: relative; top: 4px;  }  
+
+    .weather-card:not(.expanded) .expand-btn { display: block; }
+    .weather-card.expanded .expand-btn { display: none; }
+    .weather-card:not(.expanded) .collapse-btn { display: none; }
+    .weather-card.expanded .collapse-btn { display: block; }
+
+     
+    .weather-detailed {
+      display: none;
+      padding: 15px;
+    }
+    .weather-card.expanded .weather-detailed {
+      display: block;
+    }
+    .weather-card.expanded .weather-small {
+      display: none;
+    }
+
+     
+    .expanded-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .expanded-left { display: flex; align-items: center; }
+    .popup-icon { font-size: 28px; margin-right: 10px; }
+    .popup-city { font-size: 16px; font-weight: bold; }
+    .popup-desc { font-size: 13px; opacity: 0.7; }
+    .expanded-right { text-align: right; }
+    .popup-temp { font-size: 32px; font-weight: 300; line-height: 1; }
+    .popup-feel { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+
+     
+    .expanded-actions { margin-top: 10px; }
+    #city-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+    .popup-meta {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 8px;
+    }
+
+     
+
+     
+    .expanded-hourly-forecast { margin-top:10px; }
+    .hourly-forecast-list { 
+      display:flex; 
+      gap:8px; 
+      overflow-x:auto;  
+      padding-bottom:6px;  
+      white-space:nowrap;  
+      scrollbar-width: thin;  
+      scroll-snap-type: x mandatory;  
+    }
+     
+    .hourly-forecast-list::-webkit-scrollbar {
+        height: 4px;
+    }
+    .hourly-forecast-list::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+
+    .hourly-item {
+      min-width:56px; 
+      padding:6px 0; 
+      border-radius:6px; 
+      background:#f7f7f7; 
+      text-align:center; 
+      font-size:12px;
+      display:inline-block; 
+      scroll-snap-align: start;
+    }
+    .hi-icon { font-size:20px; margin:4px 0; }
+    .hi-temp { font-weight:600; }
+    .hi-time { font-size:11px; opacity:0.8; }
+
+     
+    .expanded-forecast { margin-top:10px; }
+    .forecast-list { display:block; padding:0; border:1px solid #eee; border-radius:6px; }
+    .forecast-day { 
+      display:flex; 
+      justify-content:space-between;
+      align-items:center;
+      padding:8px 10px; 
+      background:#fff; 
+      font-size:13px; 
+      border-bottom:1px solid #eee; 
+    }
+    .forecast-day:last-child { border-bottom:none; }
+    
+    .fd-date { flex:2; font-weight: bold; }  
+    .fd-desc { flex:3; text-align: left; opacity: 0.8; }  
+    .fd-icon { font-size:20px; margin:0 10px; flex-shrink: 0; }
+    .fd-temp { font-weight:700; width:60px; text-align:right; flex-shrink: 0; }  
+
+     
+    .expanded-indices {
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid #eee;
+    }
+    .index-item {
+      font-size:12px;
+      line-height:1.6;
+      opacity:0.9;
+    }
+    
+     
+    @media(max-width:440px){
+      .widget-weather {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+      }
+      .weather-card {
+        width: auto;
+      }
+      .weather-card.expanded {
+        width: auto;
+      }
+    }
+  </style>
+
+
+<div class="widget widget-weather" id="widget-weather">
+  <div class="weather-card" id="weather-card">
+    
+    <div class="weather-small" id="weather-small">
+      <div class="w-left"><div id="weather-icon" class="weather-icon"></div></div>
+      <div class="w-mid">
+        <div id="weather-city" class="weather-city">--</div>
+        <div id="weather-now" class="weather-now">--</div>
+      </div>
+      <div class="w-right">
+        <div id="weather-temp" class="weather-temp">--°</div>
+      </div>
+      <div class="control-btn expand-btn" id="expand-btn" title="展开"></div>
+    </div>
+
+    <div class="weather-detailed hidden" id="weather-detailed">
+      <div class="control-btn collapse-btn" id="collapse-btn" title="收起"></div>
+      
+      <div class="expanded-header">
+        <div class="expanded-left">
+          <div id="popup-icon" class="popup-icon"></div>
+          <div class="expanded-text">
+            <div id="popup-city" class="popup-city">--</div>
+            <div id="popup-desc" class="popup-desc">--</div>
+          </div>
+        </div>
+        <div class="expanded-right">
+          <div class="popup-temp" id="popup-temp">--°</div>
+          <div class="popup-feel" id="popup-feel">体感 --°</div>
+        </div>
+      </div>
+
+      <div class="expanded-actions">
+        <input id="city-input" placeholder="输入城市名并回车切换城市"/>
+        <div class="popup-meta" id="popup-meta">湿度: --  风速: --</div>
+      </div>
+      
+      <div class="expanded-hourly-forecast">
+        <div class="hourly-forecast-list" id="hourly-forecast-list">
+          </div>
+      </div>
+
+      <div class="expanded-forecast">
+        <div class="forecast-list" id="forecast-list">
+          </div>
+      </div>
+      
+      <div class="expanded-indices" id="expanded-indices">
+        <div id="air-quality" class="index-item">空气质量：--</div>
+        <div id="uv-index" class="index-item">紫外线指数：--</div>
+        <div id="sunscreen-text" class="index-item">防晒建议：--</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const card = document.getElementById("weather-card");
+  const small = document.getElementById("weather-small");
+  const detailed = document.getElementById("weather-detailed");
+  const expandBtn = document.getElementById("expand-btn");
+  const collapseBtn = document.getElementById("collapse-btn");
+  const cityInput = document.getElementById("city-input");
+
+  
+  const iconEl = document.getElementById("weather-icon");
+  const cityEl = document.getElementById("weather-city");
+  const nowEl = document.getElementById("weather-now");
+  const tempEl = document.getElementById("weather-temp");
+  
+  
+  const popupCity = document.getElementById("popup-city");
+  const popupDesc = document.getElementById("popup-desc");
+  const popupTemp = document.getElementById("popup-temp");
+  const popupFeel = document.getElementById("popup-feel");
+  const popupMeta = document.getElementById("popup-meta");
+  const popupIcon = document.getElementById("popup-icon");
+  
+  
+  const hourlyForecastList = document.getElementById("hourly-forecast-list");
+  const forecastList = document.getElementById("forecast-list"); 
+  const airQualityEl = document.getElementById("air-quality");
+  const uvIndexEl = document.getElementById("uv-index");
+  const sunscreenTextEl = document.getElementById("sunscreen-text");
+
+
+  function fmtTemp(t){ return (t==null || t===undefined) ? "--°" : Math.round(t)+"°"; }
+  function fmtRangeTemp(min, max){
+    const minStr = (min!=null && min!==undefined) ? Math.round(min) : "--";
+    const maxStr = (max!=null && max!==undefined) ? Math.round(max) : "--";
+    return `${maxStr}/${minStr}°`;
+  }
+
+  
+
+  function renderNow(data){
+    if(!data) return;
+    cityEl.textContent = data.city||"--"; 
+    nowEl.textContent = data.info||"--"; 
+    tempEl.textContent = fmtTemp(data.temperature); 
+    iconEl.className = "weather-icon qi qi-"+data.icon; 
+    
+    
+    popupCity.textContent = data.city||"--"; 
+    popupDesc.textContent = data.info||"--"; 
+    popupTemp.textContent = fmtTemp(data.temperature);
+    popupFeel.textContent = "体感 "+(data.feel?fmtTemp(data.feel):"--");
+    popupMeta.textContent = `湿度: ${data.humidity??"--"}%  风速: ${data.wind??"--"}`;
+    popupIcon.className = "popup-icon qi qi-"+data.icon;
+  }
+  
+  
+
+  function renderHourly(hourlyForecasts){
+    hourlyForecastList.innerHTML = "";
+    if(!Array.isArray(hourlyForecasts)) return;
+    hourlyForecasts.forEach(h => {
+      const d = document.createElement("div");
+      d.className = "hourly-item";
+      
+      d.innerHTML = `<div class="hi-time">${h.time || "--:--"}</div>
+                     <div class="hi-icon qi qi-${h.icon || "100"}"></div>
+                     <div class="hi-temp">${fmtTemp(h.temp)}</div>`;
+      hourlyForecastList.appendChild(d);
+    });
+  }
+
+  
+
+  function renderDaily(dailyForecasts){
+    forecastList.innerHTML=""; 
+    if(!Array.isArray(dailyForecasts)) return;
+    dailyForecasts.forEach(day=>{
+      const d=document.createElement("div"); 
+      d.className="forecast-day";
+      
+      d.innerHTML=`<div class="fd-date">${day.date||""}</div>
+                   <div class="fd-desc">${day.text||""}</div>
+                   <div class="fd-icon qi qi-${day.icon||"100"}"></div>
+                   <div class="fd-temp">${fmtRangeTemp(day.min, day.max)}</div>`;
+      forecastList.appendChild(d);
+    });
+  }
+
+  
+
+  function renderIndices(data){
+    const air = data.air_quality || {};
+    const indices = data.weather_indices || {};
+    
+    
+    airQualityEl.textContent = `空气质量：${air.aqi??"--"} (${air.category??"--"})`;
+    
+    uvIndexEl.textContent = `紫外线指数：${indices.uvIndex??"--"} (${indices.uvCategory??"--"})`;
+    
+    sunscreenTextEl.textContent = `防晒建议：${indices.sunscreenText??"暂无建议"}`;
+  }
+
+
+  async function fetchWeatherByCity(city){
+    try{
+      const url = `http://127.0.0.1:5000/api/weather?city=${encodeURIComponent(city)}`;
+      const res = await fetch(url);
+      const j = await res.json();
+      if(res.status !== 200 || j.code) {
+        console.error("Weather API Error:", j.message || "Unknown error");
+        alert(`天气查询失败: ${j.message || "请检查后端服务是否运行正常"}`);
+        return;
+      }
+      renderNow(j);
+      renderDaily(j.daily_forecast||[]); 
+      renderHourly(j.hourly_forecast||[]); 
+      renderIndices(j); 
+    }catch(e){ 
+      console.error(e);
+      alert("无法连接到后端服务 (http://127.0.0.1:5000)");
+    }
+  }
+
+  async function fetchWeatherByCoords(lat, lon){
+    try{
+      const url = `http://127.0.0.1:5000/api/weather?lat=${lat}&lon=${lon}`;
+      const res = await fetch(url);
+      const j = await res.json();
+      if(res.status !== 200 || j.code) {
+        console.error("Weather API Error:", j.message || "Unknown error");
+        
+        fetchWeatherByCity("成都"); 
+        return;
+      }
+      renderNow(j);
+      renderDaily(j.daily_forecast||[]); 
+      renderHourly(j.hourly_forecast||[]); 
+      renderIndices(j); 
+    }catch(e){ 
+      console.error(e);
+      alert("无法连接到后端服务 (http://127.0.0.1:5000)");
+    }
+  }
+
+  
+  function initWeather() {
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        
+        pos => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+        
+        err => fetchWeatherByCity("成都")
+      );
+    } else {
+      
+      fetchWeatherByCity("成都");
+    }
+  }
+
+  
+  expandBtn.addEventListener("click", e=>{ card.classList.add("expanded"); e.stopPropagation(); });
+  small.addEventListener("click", ()=>{ card.classList.add("expanded"); }); 
+  collapseBtn.addEventListener("click", ()=>{ card.classList.remove("expanded"); });
+
+  cityInput.addEventListener("click", e=>e.stopPropagation()); 
+  cityInput.addEventListener("keydown", e=>{
+    if(e.key==="Enter"){
+      const c = cityInput.value.trim();
+      if(c) fetchWeatherByCity(c);
+    }
+  });
+
+  initWeather();
+})();
+</script>
+
+
+            
+        
+            
+                <div>
+  <div class='clock-wrapper'>
+    <div class='clock-border'>
+      <div class='clock'>
+        <ul class='minute-marks'>
+          <li class='five'></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li class='five'></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li class='five'></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li class='five'></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li class='five'></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li class='five'></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+        <div class='hour'>
+          <div class='hand'></div>
+        </div>
+        <div class='minute'>
+          <div class='hand'></div>
+        </div>
+        <div class='second'>
+          <div class='hand'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script>
+  window.onload = () => {
+    initTime();
+  }
+
+  
+
+  function initTime() {
+    
+    const now = new Date(Date.now() + 3000);
+    const perHour = 360 / 12;
+    const perHourMinute = perHour / 60;
+    const perSecond = 360 / 60;
+    
+    const hour = document.querySelector(".hour");
+    setDeg(hour, (now.getHours() % 12) * perHour + now.getMinutes() * perHourMinute);
+    
+    const minute = document.querySelector(".minute");
+    setDeg(minute, now.getMinutes() * perSecond + now.getSeconds() * perSecond / 60);
+    
+    const second = document.querySelector(".second");
+    setDeg(second, now.getSeconds() * perSecond);
+  }
+
+  
+
+  function setDeg(element, deg) {
+    element.style.transform = "rotate(" + deg + "deg)";
+  }
+</script>
+  
+<style>
+.clock-wrapper {
+ 
+  overflow: hidden;
+  position: relative;
+  width: 460px;
+  height: 460px;
+  zoom: 0.4;
+}
+.clock-border {
+  position: absolute;
+ 
+  margin: auto;
+  width: 460px;
+  height: 460px;
+  border-width: 18px;
+  border-color: transparent #d2d8df #d2d8df;
+  border-style: solid;
+  -webkit-border-radius: 50%;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 50%;
+  -moz-background-clip: padding;
+  border-radius: 50%;
+  background-clip: padding-box;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-animation: rotate-clock-border 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  -moz-animation: rotate-clock-border 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  -o-animation: rotate-clock-border 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  animation: rotate-clock-border 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  -webkit-animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+  -moz-animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+  -o-animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+  animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+}
+.clock {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 400px;
+  height: 400px;
+  padding: 0;
+  background-color: #262c33;
+  border: 18px solid #373f4a;
+  -webkit-border-radius: 50%;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 50%;
+  -moz-background-clip: padding;
+  border-radius: 50%;
+  background-clip: padding-box;
+  -webkit-background-clip: border-box;
+  -moz-background-clip: border;
+  background-clip: border-box;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-animation: counterrotate-clock 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  -moz-animation: counterrotate-clock 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  -o-animation: counterrotate-clock 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  animation: counterrotate-clock 0.69s cubic-bezier(0.645, 0, 0.605, 1) 0.69s 1 forwards;
+  -webkit-animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+  -moz-animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+  -o-animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+  animation-timing-function: cubic-bezier(0.645, -0.18, 0.605, 1.36);
+}
+
+@-webkit-keyframes rotate-clock-border{
+  0%{ -webkit-transform: rotate( 45deg); }
+  100%{ -webkit-transform: rotate( 315deg); }
+}
+@-moz-keyframes rotate-clock-border{
+  0%{ -moz-transform: rotate( 45deg); }
+  100%{ -moz-transform: rotate( 315deg); }
+}
+@-o-keyframes rotate-clock-border{
+  0%{ -o-transform: rotate( 45deg); }
+  100%{ -o-transform: rotate( 315deg); }
+}
+@keyframes rotate-clock-border{
+  0%{-webkit-transform: rotate( 45deg);-moz-transform: rotate( 45deg);-ms-transform: rotate( 45deg);transform: rotate( 45deg); }
+  100%{-webkit-transform: rotate( 315deg);-moz-transform: rotate( 315deg);-ms-transform: rotate( 315deg);transform: rotate( 315deg); }
+}
+
+@-webkit-keyframes counterrotate-clock{
+  0%{ -webkit-transform: rotate(-45deg); }
+  100%{ -webkit-transform: rotate(-315deg); }
+}
+@-moz-keyframes counterrotate-clock{
+  0%{ -moz-transform: rotate(-45deg); }
+  100%{ -moz-transform: rotate(-315deg); }
+}
+@-o-keyframes counterrotate-clock{
+  0%{ -o-transform: rotate(-45deg); }
+  100%{ -o-transform: rotate(-315deg); }
+}
+@keyframes counterrotate-clock{
+  0%{-webkit-transform: rotate(-45deg);-moz-transform: rotate(-45deg);-ms-transform: rotate(-45deg);transform: rotate(-45deg); }
+  100%{-webkit-transform: rotate(-315deg);-moz-transform: rotate(-315deg);-ms-transform: rotate(-315deg);transform: rotate(-315deg); }
+}
+
+.hour {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-transform: rotate(5deg);
+  -moz-transform: rotate(5deg);
+  -o-transform: rotate(5deg);
+  -ms-transform: rotate(5deg);
+  transform: rotate(5deg);
+}
+.hour .hand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-animation: tick 43200s normal infinite steps(3600, end) 3s;
+  -moz-animation: tick 43200s normal infinite steps(3600, end) 3s;
+  -o-animation: tick 43200s normal infinite steps(3600, end) 3s;
+  animation: tick 43200s normal infinite steps(3600, end) 3s;
+}
+.hour .hand:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: inline-block;
+  top: 0;
+  width: 16px;
+  height: 0;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-left-radius: 2px;
+  -webkit-border-top-right-radius: 2px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius-topright: 2px;
+  -moz-background-clip: padding;
+  border-top-right-radius: 2px;
+  background-clip: padding-box;
+  -webkit-transform-origin: center 100%;
+  -moz-transform-origin: center 100%;
+  -o-transform-origin: center 100%;
+  -ms-transform-origin: center 100%;
+  transform-origin: center 100%;
+  background-color: #fff;
+}
+.hour .hand:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  display: inline-block;
+  border-bottom: 16px solid #ffffff;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  width: 0;
+  height: 0;
+  -webkit-transform-origin: center 100%;
+  -moz-transform-origin: center 100%;
+  -o-transform-origin: center 100%;
+  -ms-transform-origin: center 100%;
+  transform-origin: center 100%;
+}
+.hour .hand:before {
+  -webkit-animation: hour-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  -moz-animation: hour-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  -o-animation: hour-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  animation: hour-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  -webkit-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -moz-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -o-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+}
+
+@-webkit-keyframes hour-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 120px; top: -120px; }
+}
+@-moz-keyframes hour-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 120px; top: -120px; }
+}
+@-o-keyframes hour-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 120px; top: -120px; }
+}
+@keyframes hour-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 120px; top: -120px; }
+}
+.hour .hand:after {
+  -webkit-animation: hour-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  -moz-animation: hour-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  -o-animation: hour-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  animation: hour-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.35s 1 forwards;
+  -webkit-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -moz-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -o-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+}
+
+@-webkit-keyframes hour-grow-after{
+  0%{ top: 0; }
+  100%{ top: -254px; }
+}
+@-moz-keyframes hour-grow-after{
+  0%{ top: 0; }
+  100%{ top: -254px; }
+}
+@-o-keyframes hour-grow-after{
+  0%{ top: 0; }
+  100%{ top: -254px; }
+}
+@keyframes hour-grow-after{
+  0%{ top: 0; }
+  100%{ top: -254px; }
+}
+.minute {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-transform: rotate(288deg);
+  -moz-transform: rotate(288deg);
+  -o-transform: rotate(288deg);
+  -ms-transform: rotate(288deg);
+  transform: rotate(288deg);
+}
+.minute .hand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-animation: tick 3600s normal infinite steps(3600, end) 3s;
+  -moz-animation: tick 3600s normal infinite steps(3600, end) 3s;
+  -o-animation: tick 3600s normal infinite steps(3600, end) 3s;
+  animation: tick 3600s normal infinite steps(3600, end) 3s;
+}
+.minute .hand:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: inline-block;
+  top: 0;
+  width: 12px;
+  height: 0;
+  -webkit-border-top-left-radius: 2px;
+  -moz-border-radius-topleft: 2px;
+  border-top-left-radius: 2px;
+  -webkit-border-top-right-radius: 2px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius-topright: 2px;
+  -moz-background-clip: padding;
+  border-top-right-radius: 2px;
+  background-clip: padding-box;
+  -webkit-transform-origin: center 100%;
+  -moz-transform-origin: center 100%;
+  -o-transform-origin: center 100%;
+  -ms-transform-origin: center 100%;
+  transform-origin: center 100%;
+  background-color: #fff;
+}
+.minute .hand:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  display: inline-block;
+  border-bottom: 12px solid #ffffff;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  width: 0;
+  height: 0;
+  -webkit-transform-origin: center 100%;
+  -moz-transform-origin: center 100%;
+  -o-transform-origin: center 100%;
+  -ms-transform-origin: center 100%;
+  transform-origin: center 100%;
+}
+.minute .hand:before {
+  -webkit-animation: minute-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  -moz-animation: minute-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  -o-animation: minute-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  animation: minute-grow-before 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  -webkit-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -moz-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -o-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+}
+ 
+ 
+ 
+@-webkit-keyframes minute-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 168px; top: -168px; }
+}
+@-moz-keyframes minute-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 168px; top: -168px; }
+}
+@-o-keyframes minute-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 168px; top: -168px; }
+}
+@keyframes minute-grow-before{
+  0%{ height: 0; top: 0; }
+  100%{ height: 168px; top: -168px; }
+}
+.minute .hand:after {
+  -webkit-animation: minute-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  -moz-animation: minute-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  -o-animation: minute-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  animation: minute-grow-after 0.4s cubic-bezier(0.69, 0, 0.49, 1) 1.6s 1 forwards;
+  -webkit-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -moz-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  -o-animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+  animation-timing-function: cubic-bezier(0.69, -0.06, 0.49, 1.4);
+}
+
+@-webkit-keyframes minute-grow-after{
+  0%{ top: 0; }
+  100%{ top: -346px; }
+}
+@-moz-keyframes minute-grow-after{
+  0%{ top: 0; }
+  100%{ top: -346px; }
+}
+@-o-keyframes minute-grow-after{
+  0%{ top: 0; }
+  100%{ top: -346px; }
+}
+@keyframes minute-grow-after{
+  0%{ top: 0; }
+  100%{ top: -346px; }
+}
+.second {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-transform: rotate(0);
+  -moz-transform: rotate(0);
+  -o-transform: rotate(0);
+  -ms-transform: rotate(0);
+  transform: rotate(0);
+}
+.second .hand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-animation: tick-second 1s normal infinite steps(30, end) 3s;
+  -moz-animation: tick-second 1s normal infinite steps(30, end) 3s;
+  -o-animation: tick-second 1s normal infinite steps(30, end) 3s;
+  animation: tick-second 1s normal infinite steps(30, end) 3s;
+}
+.second .hand:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  width: 8px;
+  height: 0;
+  background-color: #f16b41;
+  -webkit-border-radius: 8px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 8px;
+  -moz-background-clip: padding;
+  border-radius: 8px;
+  background-clip: padding-box;
+  -webkit-transform-origin: center 180px;
+  -moz-transform-origin: center 180px;
+  -o-transform-origin: center 180px;
+  -ms-transform-origin: center 180px;
+  transform-origin: center 180px;
+  -webkit-animation: second-grow 1.6s cubic-bezier(1, 0, 0, 1) 1.45s 1 forwards, second 60s normal infinite steps(60, end) 3s;
+  -moz-animation: second-grow 1.6s cubic-bezier(1, 0, 0, 1) 1.45s 1 forwards, second 60s normal infinite steps(60, end) 3s;
+  -o-animation: second-grow 1.6s cubic-bezier(1, 0, 0, 1) 1.45s 1 forwards, second 60s normal infinite steps(60, end) 3s;
+  animation: second-grow 1.6s cubic-bezier(1, 0, 0, 1) 1.45s 1 forwards, second 60s normal infinite steps(60, end) 3s;
+}
+
+@-webkit-keyframes second-grow{
+  from { top: 0; height: 0; }
+  100%{ top: -120px; height: 240px; }
+}
+@-moz-keyframes second-grow{
+  from { top: 0; height: 0; }
+  100%{ top: -120px; height: 240px; }
+}
+@-o-keyframes second-grow{
+  from { top: 0; height: 0; }
+  100%{ top: -120px; height: 240px; }
+}
+@keyframes second-grow{
+  from { top: 0; height: 0; }
+  100%{ top: -120px; height: 240px; }
+}
+.second .hand:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  -webkit-border-radius: 32px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 32px;
+  -moz-background-clip: padding;
+  border-radius: 32px;
+  background-clip: padding-box;
+  background-color: #f16b41;
+}
+
+@-webkit-keyframes tick{
+  0%{ -webkit-transform: rotate(0deg); }
+  100%{ -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes tick{
+  0%{ -moz-transform: rotate(0deg); }
+  100%{ -moz-transform: rotate(360deg); }
+}
+@-o-keyframes tick{
+  0%{ -o-transform: rotate(0deg); }
+  100%{ -o-transform: rotate(360deg); }
+}
+@keyframes tick{
+  0%{-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-ms-transform: rotate(0deg);transform: rotate(0deg); }
+  100%{-webkit-transform: rotate(360deg);-moz-transform: rotate(360deg);-ms-transform: rotate(360deg);transform: rotate(360deg); }
+}
+
+@-webkit-keyframes second{
+  0%{ -webkit-transform: rotate(0deg) }
+  100%{ -webkit-transform: rotate(360deg) }
+}
+@-moz-keyframes second{
+  0%{ -moz-transform: rotate(0deg) }
+  100%{ -moz-transform: rotate(360deg) }
+}
+@-o-keyframes second{
+  0%{ -o-transform: rotate(0deg) }
+  100%{ -o-transform: rotate(360deg) }
+}
+@keyframes second{
+  0%{-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-ms-transform: rotate(0deg);transform: rotate(0deg);}
+  100%{-webkit-transform: rotate(360deg);-moz-transform: rotate(360deg);-ms-transform: rotate(360deg);transform: rotate(360deg);}
+}
+
+@-webkit-keyframes tick-second{
+  0%{ -webkit-transform: rotate(0deg); }
+  21%{ -webkit-transform: rotate(4deg); }
+  26%{ -webkit-transform: rotate(8deg); }
+  33%{ -webkit-transform: rotate(4deg); }
+  37%{ -webkit-transform: rotate(6deg); }
+  100%{ -webkit-transform: rotate(6deg); }
+}
+@-moz-keyframes tick-second{
+  0%{ -moz-transform: rotate(0deg); }
+  21%{ -moz-transform: rotate(4deg); }
+  26%{ -moz-transform: rotate(8deg); }
+  33%{ -moz-transform: rotate(4deg); }
+  37%{ -moz-transform: rotate(6deg); }
+  100%{ -moz-transform: rotate(6deg); }
+}
+@-o-keyframes tick-second{
+  0%{ -o-transform: rotate(0deg); }
+  21%{ -o-transform: rotate(4deg); }
+  26%{ -o-transform: rotate(8deg); }
+  33%{ -o-transform: rotate(4deg); }
+  37%{ -o-transform: rotate(6deg); }
+  100%{ -o-transform: rotate(6deg); }
+}
+@keyframes tick-second{
+  0%{-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-ms-transform: rotate(0deg);transform: rotate(0deg); }
+  21%{-webkit-transform: rotate(4deg);-moz-transform: rotate(4deg);-ms-transform: rotate(4deg);transform: rotate(4deg); }
+  26%{-webkit-transform: rotate(8deg);-moz-transform: rotate(8deg);-ms-transform: rotate(8deg);transform: rotate(8deg); }
+  33%{-webkit-transform: rotate(4deg);-moz-transform: rotate(4deg);-ms-transform: rotate(4deg);transform: rotate(4deg); }
+  37%{-webkit-transform: rotate(6deg);-moz-transform: rotate(6deg);-ms-transform: rotate(6deg);transform: rotate(6deg); }
+  100%{-webkit-transform: rotate(6deg);-moz-transform: rotate(6deg);-ms-transform: rotate(6deg);transform: rotate(6deg); }
+}
+.minute-marks {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  width: 0;
+  height: 0;
+}
+.minute-marks li {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+}
+.minute-marks li:before,
+.minute-marks li:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 0;
+  height: 0;
+  display: inline-block;
+  border-color: #d4d5d6;
+  border-width: 4px;
+  border-style: solid;
+  -webkit-border-radius: 4px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 4px;
+  -moz-background-clip: padding;
+  border-radius: 4px;
+  background-clip: padding-box;
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+  opacity: 0;
+  -webkit-animation: fade-in 0.1s ease 0s 1 forwards;
+  -moz-animation: fade-in 0.1s ease 0s 1 forwards;
+  -o-animation: fade-in 0.1s ease 0s 1 forwards;
+  animation: fade-in 0.1s ease 0s 1 forwards;
+}
+ 
+ 
+ 
+@-webkit-keyframes fade-in{
+  from{ -webkit-opacity: 0; -moz-opacity: 0; -o-opacity: 0; opacity: 0; }
+  to{ -webkit-opacity: 1; -moz-opacity: 1; -o-opacity: 1; opacity: 1; }
+}
+@-moz-keyframes fade-in{
+  from{ -webkit-opacity: 0; -moz-opacity: 0; -o-opacity: 0; opacity: 0; }
+  to{ -webkit-opacity: 1; -moz-opacity: 1; -o-opacity: 1; opacity: 1; }
+}
+@-o-keyframes fade-in{
+  from{ -webkit-opacity: 0; -moz-opacity: 0; -o-opacity: 0; opacity: 0; }
+  to{ -webkit-opacity: 1; -moz-opacity: 1; -o-opacity: 1; opacity: 1; }
+}
+@keyframes fade-in{
+  from{ -webkit-opacity: 0; -moz-opacity: 0; -o-opacity: 0; opacity: 0; }
+  to{ -webkit-opacity: 1; -moz-opacity: 1; -o-opacity: 1; opacity: 1; }
+}
+.minute-marks li:before {
+  top: -380px;
+}
+.minute-marks li:after {
+  bottom: -380px;
+}
+.minute-marks li.five:before,
+.minute-marks li.five:after {
+  width: 0;
+  height: 20px;
+}
+.minute-marks li.five:before {
+  top: -360px;
+}
+.minute-marks li.five:after {
+  bottom: -360px;
+}
+.minute-marks li:nth-child( 1) {
+  -webkit-transform: rotate(0);
+  -moz-transform: rotate(0);
+  -o-transform: rotate(0);
+  -ms-transform: rotate(0);
+  transform: rotate(0);
+}
+.minute-marks li:nth-child( 1):before {
+  -webkit-animation-delay: 0.017s;
+  -moz-animation-delay: 0.017s;
+  -o-animation-delay: 0.017s;
+  animation-delay: 0.017s;
+}
+.minute-marks li:nth-child( 1):after {
+  -webkit-animation-delay: 0.544s;
+  -moz-animation-delay: 0.544s;
+  -o-animation-delay: 0.544s;
+  animation-delay: 0.544s;
+}
+.minute-marks li:nth-child( 2) {
+  -webkit-transform: rotate(6deg);
+  -moz-transform: rotate(6deg);
+  -o-transform: rotate(6deg);
+  -ms-transform: rotate(6deg);
+  transform: rotate(6deg);
+}
+.minute-marks li:nth-child( 2):before {
+  -webkit-animation-delay: 0.034s;
+  -moz-animation-delay: 0.034s;
+  -o-animation-delay: 0.034s;
+  animation-delay: 0.034s;
+}
+.minute-marks li:nth-child( 2):after {
+  -webkit-animation-delay: 0.561s;
+  -moz-animation-delay: 0.561s;
+  -o-animation-delay: 0.561s;
+  animation-delay: 0.561s;
+}
+.minute-marks li:nth-child( 3) {
+  -webkit-transform: rotate(12deg);
+  -moz-transform: rotate(12deg);
+  -o-transform: rotate(12deg);
+  -ms-transform: rotate(12deg);
+  transform: rotate(12deg);
+}
+.minute-marks li:nth-child( 3):before {
+  -webkit-animation-delay: 0.051000000000000004s;
+  -moz-animation-delay: 0.051000000000000004s;
+  -o-animation-delay: 0.051000000000000004s;
+  animation-delay: 0.051000000000000004s;
+}
+.minute-marks li:nth-child( 3):after {
+  -webkit-animation-delay: 0.5780000000000001s;
+  -moz-animation-delay: 0.5780000000000001s;
+  -o-animation-delay: 0.5780000000000001s;
+  animation-delay: 0.5780000000000001s;
+}
+.minute-marks li:nth-child( 4) {
+  -webkit-transform: rotate(18deg);
+  -moz-transform: rotate(18deg);
+  -o-transform: rotate(18deg);
+  -ms-transform: rotate(18deg);
+  transform: rotate(18deg);
+}
+.minute-marks li:nth-child( 4):before {
+  -webkit-animation-delay: 0.068s;
+  -moz-animation-delay: 0.068s;
+  -o-animation-delay: 0.068s;
+  animation-delay: 0.068s;
+}
+.minute-marks li:nth-child( 4):after {
+  -webkit-animation-delay: 0.595s;
+  -moz-animation-delay: 0.595s;
+  -o-animation-delay: 0.595s;
+  animation-delay: 0.595s;
+}
+.minute-marks li:nth-child( 5) {
+  -webkit-transform: rotate(24deg);
+  -moz-transform: rotate(24deg);
+  -o-transform: rotate(24deg);
+  -ms-transform: rotate(24deg);
+  transform: rotate(24deg);
+}
+.minute-marks li:nth-child( 5):before {
+  -webkit-animation-delay: 0.085s;
+  -moz-animation-delay: 0.085s;
+  -o-animation-delay: 0.085s;
+  animation-delay: 0.085s;
+}
+.minute-marks li:nth-child( 5):after {
+  -webkit-animation-delay: 0.612s;
+  -moz-animation-delay: 0.612s;
+  -o-animation-delay: 0.612s;
+  animation-delay: 0.612s;
+}
+.minute-marks li:nth-child( 6) {
+  -webkit-transform: rotate(30deg);
+  -moz-transform: rotate(30deg);
+  -o-transform: rotate(30deg);
+  -ms-transform: rotate(30deg);
+  transform: rotate(30deg);
+}
+.minute-marks li:nth-child( 6):before {
+  -webkit-animation-delay: 0.10200000000000001s;
+  -moz-animation-delay: 0.10200000000000001s;
+  -o-animation-delay: 0.10200000000000001s;
+  animation-delay: 0.10200000000000001s;
+}
+.minute-marks li:nth-child( 6):after {
+  -webkit-animation-delay: 0.629s;
+  -moz-animation-delay: 0.629s;
+  -o-animation-delay: 0.629s;
+  animation-delay: 0.629s;
+}
+.minute-marks li:nth-child( 7) {
+  -webkit-transform: rotate(36deg);
+  -moz-transform: rotate(36deg);
+  -o-transform: rotate(36deg);
+  -ms-transform: rotate(36deg);
+  transform: rotate(36deg);
+}
+.minute-marks li:nth-child( 7):before {
+  -webkit-animation-delay: 0.11900000000000001s;
+  -moz-animation-delay: 0.11900000000000001s;
+  -o-animation-delay: 0.11900000000000001s;
+  animation-delay: 0.11900000000000001s;
+}
+.minute-marks li:nth-child( 7):after {
+  -webkit-animation-delay: 0.646s;
+  -moz-animation-delay: 0.646s;
+  -o-animation-delay: 0.646s;
+  animation-delay: 0.646s;
+}
+.minute-marks li:nth-child( 8) {
+  -webkit-transform: rotate(42deg);
+  -moz-transform: rotate(42deg);
+  -o-transform: rotate(42deg);
+  -ms-transform: rotate(42deg);
+  transform: rotate(42deg);
+}
+.minute-marks li:nth-child( 8):before {
+  -webkit-animation-delay: 0.136s;
+  -moz-animation-delay: 0.136s;
+  -o-animation-delay: 0.136s;
+  animation-delay: 0.136s;
+}
+.minute-marks li:nth-child( 8):after {
+  -webkit-animation-delay: 0.663s;
+  -moz-animation-delay: 0.663s;
+  -o-animation-delay: 0.663s;
+  animation-delay: 0.663s;
+}
+.minute-marks li:nth-child( 9) {
+  -webkit-transform: rotate(48deg);
+  -moz-transform: rotate(48deg);
+  -o-transform: rotate(48deg);
+  -ms-transform: rotate(48deg);
+  transform: rotate(48deg);
+}
+.minute-marks li:nth-child( 9):before {
+  -webkit-animation-delay: 0.15300000000000002s;
+  -moz-animation-delay: 0.15300000000000002s;
+  -o-animation-delay: 0.15300000000000002s;
+  animation-delay: 0.15300000000000002s;
+}
+.minute-marks li:nth-child( 9):after {
+  -webkit-animation-delay: 0.68s;
+  -moz-animation-delay: 0.68s;
+  -o-animation-delay: 0.68s;
+  animation-delay: 0.68s;
+}
+.minute-marks li:nth-child( 10) {
+  -webkit-transform: rotate(54deg);
+  -moz-transform: rotate(54deg);
+  -o-transform: rotate(54deg);
+  -ms-transform: rotate(54deg);
+  transform: rotate(54deg);
+}
+.minute-marks li:nth-child( 10):before {
+  -webkit-animation-delay: 0.17s;
+  -moz-animation-delay: 0.17s;
+  -o-animation-delay: 0.17s;
+  animation-delay: 0.17s;
+}
+.minute-marks li:nth-child( 10):after {
+  -webkit-animation-delay: 0.6970000000000001s;
+  -moz-animation-delay: 0.6970000000000001s;
+  -o-animation-delay: 0.6970000000000001s;
+  animation-delay: 0.6970000000000001s;
+}
+.minute-marks li:nth-child( 11) {
+  -webkit-transform: rotate(60deg);
+  -moz-transform: rotate(60deg);
+  -o-transform: rotate(60deg);
+  -ms-transform: rotate(60deg);
+  transform: rotate(60deg);
+}
+.minute-marks li:nth-child( 11):before {
+  -webkit-animation-delay: 0.187s;
+  -moz-animation-delay: 0.187s;
+  -o-animation-delay: 0.187s;
+  animation-delay: 0.187s;
+}
+.minute-marks li:nth-child( 11):after {
+  -webkit-animation-delay: 0.714s;
+  -moz-animation-delay: 0.714s;
+  -o-animation-delay: 0.714s;
+  animation-delay: 0.714s;
+}
+.minute-marks li:nth-child( 12) {
+  -webkit-transform: rotate(66deg);
+  -moz-transform: rotate(66deg);
+  -o-transform: rotate(66deg);
+  -ms-transform: rotate(66deg);
+  transform: rotate(66deg);
+}
+.minute-marks li:nth-child( 12):before {
+  -webkit-animation-delay: 0.20400000000000001s;
+  -moz-animation-delay: 0.20400000000000001s;
+  -o-animation-delay: 0.20400000000000001s;
+  animation-delay: 0.20400000000000001s;
+}
+.minute-marks li:nth-child( 12):after {
+  -webkit-animation-delay: 0.7310000000000001s;
+  -moz-animation-delay: 0.7310000000000001s;
+  -o-animation-delay: 0.7310000000000001s;
+  animation-delay: 0.7310000000000001s;
+}
+.minute-marks li:nth-child( 13) {
+  -webkit-transform: rotate(72deg);
+  -moz-transform: rotate(72deg);
+  -o-transform: rotate(72deg);
+  -ms-transform: rotate(72deg);
+  transform: rotate(72deg);
+}
+.minute-marks li:nth-child( 13):before {
+  -webkit-animation-delay: 0.22100000000000003s;
+  -moz-animation-delay: 0.22100000000000003s;
+  -o-animation-delay: 0.22100000000000003s;
+  animation-delay: 0.22100000000000003s;
+}
+.minute-marks li:nth-child( 13):after {
+  -webkit-animation-delay: 0.748s;
+  -moz-animation-delay: 0.748s;
+  -o-animation-delay: 0.748s;
+  animation-delay: 0.748s;
+}
+.minute-marks li:nth-child( 14) {
+  -webkit-transform: rotate(78deg);
+  -moz-transform: rotate(78deg);
+  -o-transform: rotate(78deg);
+  -ms-transform: rotate(78deg);
+  transform: rotate(78deg);
+}
+.minute-marks li:nth-child( 14):before {
+  -webkit-animation-delay: 0.23800000000000002s;
+  -moz-animation-delay: 0.23800000000000002s;
+  -o-animation-delay: 0.23800000000000002s;
+  animation-delay: 0.23800000000000002s;
+}
+.minute-marks li:nth-child( 14):after {
+  -webkit-animation-delay: 0.765s;
+  -moz-animation-delay: 0.765s;
+  -o-animation-delay: 0.765s;
+  animation-delay: 0.765s;
+}
+.minute-marks li:nth-child( 15) {
+  -webkit-transform: rotate(84deg);
+  -moz-transform: rotate(84deg);
+  -o-transform: rotate(84deg);
+  -ms-transform: rotate(84deg);
+  transform: rotate(84deg);
+}
+.minute-marks li:nth-child( 15):before {
+  -webkit-animation-delay: 0.255s;
+  -moz-animation-delay: 0.255s;
+  -o-animation-delay: 0.255s;
+  animation-delay: 0.255s;
+}
+.minute-marks li:nth-child( 15):after {
+  -webkit-animation-delay: 0.782s;
+  -moz-animation-delay: 0.782s;
+  -o-animation-delay: 0.782s;
+  animation-delay: 0.782s;
+}
+.minute-marks li:nth-child( 16) {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.minute-marks li:nth-child( 16):before {
+  -webkit-animation-delay: 0.272s;
+  -moz-animation-delay: 0.272s;
+  -o-animation-delay: 0.272s;
+  animation-delay: 0.272s;
+}
+.minute-marks li:nth-child( 16):after {
+  -webkit-animation-delay: 0.799s;
+  -moz-animation-delay: 0.799s;
+  -o-animation-delay: 0.799s;
+  animation-delay: 0.799s;
+}
+.minute-marks li:nth-child( 17) {
+  -webkit-transform: rotate(96deg);
+  -moz-transform: rotate(96deg);
+  -o-transform: rotate(96deg);
+  -ms-transform: rotate(96deg);
+  transform: rotate(96deg);
+}
+.minute-marks li:nth-child( 17):before {
+  -webkit-animation-delay: 0.28900000000000003s;
+  -moz-animation-delay: 0.28900000000000003s;
+  -o-animation-delay: 0.28900000000000003s;
+  animation-delay: 0.28900000000000003s;
+}
+.minute-marks li:nth-child( 17):after {
+  -webkit-animation-delay: 0.8160000000000001s;
+  -moz-animation-delay: 0.8160000000000001s;
+  -o-animation-delay: 0.8160000000000001s;
+  animation-delay: 0.8160000000000001s;
+}
+.minute-marks li:nth-child( 18) {
+  -webkit-transform: rotate(102deg);
+  -moz-transform: rotate(102deg);
+  -o-transform: rotate(102deg);
+  -ms-transform: rotate(102deg);
+  transform: rotate(102deg);
+}
+.minute-marks li:nth-child( 18):before {
+  -webkit-animation-delay: 0.30600000000000005s;
+  -moz-animation-delay: 0.30600000000000005s;
+  -o-animation-delay: 0.30600000000000005s;
+  animation-delay: 0.30600000000000005s;
+}
+.minute-marks li:nth-child( 18):after {
+  -webkit-animation-delay: 0.8330000000000001s;
+  -moz-animation-delay: 0.8330000000000001s;
+  -o-animation-delay: 0.8330000000000001s;
+  animation-delay: 0.8330000000000001s;
+}
+.minute-marks li:nth-child( 19) {
+  -webkit-transform: rotate(108deg);
+  -moz-transform: rotate(108deg);
+  -o-transform: rotate(108deg);
+  -ms-transform: rotate(108deg);
+  transform: rotate(108deg);
+}
+.minute-marks li:nth-child( 19):before {
+  -webkit-animation-delay: 0.323s;
+  -moz-animation-delay: 0.323s;
+  -o-animation-delay: 0.323s;
+  animation-delay: 0.323s;
+}
+.minute-marks li:nth-child( 19):after {
+  -webkit-animation-delay: 0.8500000000000001s;
+  -moz-animation-delay: 0.8500000000000001s;
+  -o-animation-delay: 0.8500000000000001s;
+  animation-delay: 0.8500000000000001s;
+}
+.minute-marks li:nth-child( 20) {
+  -webkit-transform: rotate(114deg);
+  -moz-transform: rotate(114deg);
+  -o-transform: rotate(114deg);
+  -ms-transform: rotate(114deg);
+  transform: rotate(114deg);
+}
+.minute-marks li:nth-child( 20):before {
+  -webkit-animation-delay: 0.34s;
+  -moz-animation-delay: 0.34s;
+  -o-animation-delay: 0.34s;
+  animation-delay: 0.34s;
+}
+.minute-marks li:nth-child( 20):after {
+  -webkit-animation-delay: 0.867s;
+  -moz-animation-delay: 0.867s;
+  -o-animation-delay: 0.867s;
+  animation-delay: 0.867s;
+}
+.minute-marks li:nth-child( 21) {
+  -webkit-transform: rotate(120deg);
+  -moz-transform: rotate(120deg);
+  -o-transform: rotate(120deg);
+  -ms-transform: rotate(120deg);
+  transform: rotate(120deg);
+}
+.minute-marks li:nth-child( 21):before {
+  -webkit-animation-delay: 0.35700000000000004s;
+  -moz-animation-delay: 0.35700000000000004s;
+  -o-animation-delay: 0.35700000000000004s;
+  animation-delay: 0.35700000000000004s;
+}
+.minute-marks li:nth-child( 21):after {
+  -webkit-animation-delay: 0.8840000000000001s;
+  -moz-animation-delay: 0.8840000000000001s;
+  -o-animation-delay: 0.8840000000000001s;
+  animation-delay: 0.8840000000000001s;
+}
+.minute-marks li:nth-child( 22) {
+  -webkit-transform: rotate(126deg);
+  -moz-transform: rotate(126deg);
+  -o-transform: rotate(126deg);
+  -ms-transform: rotate(126deg);
+  transform: rotate(126deg);
+}
+.minute-marks li:nth-child( 22):before {
+  -webkit-animation-delay: 0.374s;
+  -moz-animation-delay: 0.374s;
+  -o-animation-delay: 0.374s;
+  animation-delay: 0.374s;
+}
+.minute-marks li:nth-child( 22):after {
+  -webkit-animation-delay: 0.901s;
+  -moz-animation-delay: 0.901s;
+  -o-animation-delay: 0.901s;
+  animation-delay: 0.901s;
+}
+.minute-marks li:nth-child( 23) {
+  -webkit-transform: rotate(132deg);
+  -moz-transform: rotate(132deg);
+  -o-transform: rotate(132deg);
+  -ms-transform: rotate(132deg);
+  transform: rotate(132deg);
+}
+.minute-marks li:nth-child( 23):before {
+  -webkit-animation-delay: 0.391s;
+  -moz-animation-delay: 0.391s;
+  -o-animation-delay: 0.391s;
+  animation-delay: 0.391s;
+}
+.minute-marks li:nth-child( 23):after {
+  -webkit-animation-delay: 0.918s;
+  -moz-animation-delay: 0.918s;
+  -o-animation-delay: 0.918s;
+  animation-delay: 0.918s;
+}
+.minute-marks li:nth-child( 24) {
+  -webkit-transform: rotate(138deg);
+  -moz-transform: rotate(138deg);
+  -o-transform: rotate(138deg);
+  -ms-transform: rotate(138deg);
+  transform: rotate(138deg);
+}
+.minute-marks li:nth-child( 24):before {
+  -webkit-animation-delay: 0.40800000000000003s;
+  -moz-animation-delay: 0.40800000000000003s;
+  -o-animation-delay: 0.40800000000000003s;
+  animation-delay: 0.40800000000000003s;
+}
+.minute-marks li:nth-child( 24):after {
+  -webkit-animation-delay: 0.935s;
+  -moz-animation-delay: 0.935s;
+  -o-animation-delay: 0.935s;
+  animation-delay: 0.935s;
+}
+.minute-marks li:nth-child( 25) {
+  -webkit-transform: rotate(144deg);
+  -moz-transform: rotate(144deg);
+  -o-transform: rotate(144deg);
+  -ms-transform: rotate(144deg);
+  transform: rotate(144deg);
+}
+.minute-marks li:nth-child( 25):before {
+  -webkit-animation-delay: 0.42500000000000004s;
+  -moz-animation-delay: 0.42500000000000004s;
+  -o-animation-delay: 0.42500000000000004s;
+  animation-delay: 0.42500000000000004s;
+}
+.minute-marks li:nth-child( 25):after {
+  -webkit-animation-delay: 0.9520000000000001s;
+  -moz-animation-delay: 0.9520000000000001s;
+  -o-animation-delay: 0.9520000000000001s;
+  animation-delay: 0.9520000000000001s;
+}
+.minute-marks li:nth-child( 26) {
+  -webkit-transform: rotate(150deg);
+  -moz-transform: rotate(150deg);
+  -o-transform: rotate(150deg);
+  -ms-transform: rotate(150deg);
+  transform: rotate(150deg);
+}
+.minute-marks li:nth-child( 26):before {
+  -webkit-animation-delay: 0.44200000000000006s;
+  -moz-animation-delay: 0.44200000000000006s;
+  -o-animation-delay: 0.44200000000000006s;
+  animation-delay: 0.44200000000000006s;
+}
+.minute-marks li:nth-child( 26):after {
+  -webkit-animation-delay: 0.9690000000000001s;
+  -moz-animation-delay: 0.9690000000000001s;
+  -o-animation-delay: 0.9690000000000001s;
+  animation-delay: 0.9690000000000001s;
+}
+.minute-marks li:nth-child( 27) {
+  -webkit-transform: rotate(156deg);
+  -moz-transform: rotate(156deg);
+  -o-transform: rotate(156deg);
+  -ms-transform: rotate(156deg);
+  transform: rotate(156deg);
+}
+.minute-marks li:nth-child( 27):before {
+  -webkit-animation-delay: 0.459s;
+  -moz-animation-delay: 0.459s;
+  -o-animation-delay: 0.459s;
+  animation-delay: 0.459s;
+}
+.minute-marks li:nth-child( 27):after {
+  -webkit-animation-delay: 0.986s;
+  -moz-animation-delay: 0.986s;
+  -o-animation-delay: 0.986s;
+  animation-delay: 0.986s;
+}
+.minute-marks li:nth-child( 28) {
+  -webkit-transform: rotate(162deg);
+  -moz-transform: rotate(162deg);
+  -o-transform: rotate(162deg);
+  -ms-transform: rotate(162deg);
+  transform: rotate(162deg);
+}
+.minute-marks li:nth-child( 28):before {
+  -webkit-animation-delay: 0.47600000000000003s;
+  -moz-animation-delay: 0.47600000000000003s;
+  -o-animation-delay: 0.47600000000000003s;
+  animation-delay: 0.47600000000000003s;
+}
+.minute-marks li:nth-child( 28):after {
+  -webkit-animation-delay: 1.0030000000000001s;
+  -moz-animation-delay: 1.0030000000000001s;
+  -o-animation-delay: 1.0030000000000001s;
+  animation-delay: 1.0030000000000001s;
+}
+.minute-marks li:nth-child( 29) {
+  -webkit-transform: rotate(168deg);
+  -moz-transform: rotate(168deg);
+  -o-transform: rotate(168deg);
+  -ms-transform: rotate(168deg);
+  transform: rotate(168deg);
+}
+.minute-marks li:nth-child( 29):before {
+  -webkit-animation-delay: 0.49300000000000005s;
+  -moz-animation-delay: 0.49300000000000005s;
+  -o-animation-delay: 0.49300000000000005s;
+  animation-delay: 0.49300000000000005s;
+}
+.minute-marks li:nth-child( 29):after {
+  -webkit-animation-delay: 1.02s;
+  -moz-animation-delay: 1.02s;
+  -o-animation-delay: 1.02s;
+  animation-delay: 1.02s;
+}
+.minute-marks li:nth-child( 30) {
+  -webkit-transform: rotate(174deg);
+  -moz-transform: rotate(174deg);
+  -o-transform: rotate(174deg);
+  -ms-transform: rotate(174deg);
+  transform: rotate(174deg);
+}
+.minute-marks li:nth-child( 30):before {
+  -webkit-animation-delay: 0.51s;
+  -moz-animation-delay: 0.51s;
+  -o-animation-delay: 0.51s;
+  animation-delay: 0.51s;
+}
+.minute-marks li:nth-child( 30):after {
+  -webkit-animation-delay: 1.037s;
+  -moz-animation-delay: 1.037s;
+  -o-animation-delay: 1.037s;
+  animation-delay: 1.037s;
+}
+</style>
+            
+        
+            
+                
     <section class="widget archives">
         <div class="widget-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -312,6 +1994,10 @@
         </div>
     </section>
 
+            
+        
+            
+                
             
         
     </aside>
@@ -624,20 +2310,52 @@
 
     
     function initWaifuMouseEvent() {
-        const waifu = document.getElementById("waifu");
-        if (!waifu) return;
+        const waifu = document.getElementById("waifu"); 
+        const live2dCanvas = document.getElementById("live2d"); 
 
+        if (!waifu || !live2dCanvas) return;
+
+        
         let isDown = false;
         let startX, startY;
         let startLeft, startTop;
+        
+        let hasSwitchedToTopLeft = false; 
 
         
         function dragStart(x, y) {
             isDown = true;
             startX = x;
             startY = y;
-            startLeft = waifu.offsetLeft;
-            startTop = waifu.offsetTop;
+
+            if (!hasSwitchedToTopLeft) {
+                
+
+                
+                const computedStyle = window.getComputedStyle(waifu);
+                const currentRight = parseFloat(computedStyle.right) || 0;
+                const currentBottom = parseFloat(computedStyle.bottom) || 0;
+
+                
+                startLeft = window.innerWidth - waifu.offsetWidth - currentRight;
+                startTop = window.innerHeight - waifu.offsetHeight - currentBottom;
+
+                
+                waifu.style.right = 'auto'; 
+                waifu.style.bottom = 'auto'; 
+
+                
+                waifu.style.setProperty('left', startLeft + 'px', 'important');
+                waifu.style.setProperty('top', startTop + 'px', 'important');
+
+                hasSwitchedToTopLeft = true; 
+            } else {
+                
+
+                
+                startLeft = parseFloat(waifu.style.left) || waifu.offsetLeft;
+                startTop = parseFloat(waifu.style.top) || waifu.offsetTop;
+            }
         }
 
         
@@ -648,15 +2366,20 @@
             let newTop = startTop + (y - startY);
 
             
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - 300));
-            newTop = Math.max(30, Math.min(newTop, window.innerHeight - 290));
+            const waifuWidth = waifu.offsetWidth;
+            const waifuHeight = waifu.offsetHeight;
 
-            waifu.style.left = newLeft + "px";
-            waifu.style.top = newTop + "px";
+            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - waifuWidth));
+            newTop = Math.max(30, Math.min(newTop, window.innerHeight - waifuHeight)); 
+
+            waifu.style.setProperty('left', newLeft + "px", 'important');
+            waifu.style.setProperty('top', newTop + "px", 'important');
         }
 
         
-        waifu.addEventListener("mousedown", (e) => {
+        
+        live2dCanvas.addEventListener("mousedown", (e) => {
+            e.preventDefault();
             dragStart(e.clientX, e.clientY);
         });
 
@@ -668,8 +2391,8 @@
             isDown = false;
         });
 
-        
-        waifu.addEventListener("touchstart", (e) => {
+        live2dCanvas.addEventListener("touchstart", (e) => {
+            e.preventDefault();
             const t = e.touches[0];
             dragStart(t.clientX, t.clientY);
         });
