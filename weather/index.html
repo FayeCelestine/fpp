@@ -2,21 +2,21 @@
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="">
-<title>Search</title>
+<title>Weather</title>
 
-<link rel='canonical' href='https://fayecelestine.github.io/fpp/search/'>
+<link rel='canonical' href='https://fayecelestine.github.io/fpp/weather/'>
 
-<link rel="stylesheet" href="/fpp/scss/style.min.b0e76e98cdd4f7082d1fc36f7af7e0843a81201db2197c03ca426751dc923735.css"><meta property='og:title' content="Search">
+<link rel="stylesheet" href="/fpp/scss/style.min.b0e76e98cdd4f7082d1fc36f7af7e0843a81201db2197c03ca426751dc923735.css"><meta property='og:title' content="Weather">
 <meta property='og:description' content="">
-<meta property='og:url' content='https://fayecelestine.github.io/fpp/search/'>
+<meta property='og:url' content='https://fayecelestine.github.io/fpp/weather/'>
 <meta property='og:site_name' content='期末项目展示'>
 <meta property='og:type' content='article'><meta property='article:section' content='Page' />
-<meta name="twitter:title" content="Search">
-<meta name="twitter:description" content=""><link rel="alternate" type="application/json" href="https://fayecelestine.github.io/fpp/search/index.json">
+<meta name="twitter:title" content="Weather">
+<meta name="twitter:description" content="">
     <link rel="shortcut icon" href="/fpp/favicon.ico" />
-<link rel="preload" href="/fpp/search/index.json" as="fetch" crossorigin="anonymous">
+
     </head>
-    <body class="template-search">
+    <body class="">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -191,7 +191,7 @@
         </li>
         
         
-        <li  class='current' >
+        <li >
             <a href='/fpp/search/' >
                 
                 
@@ -210,7 +210,7 @@
         </li>
         
         
-        <li >
+        <li  class='current' >
             <a href='/fpp/weather/' >
                 
                 
@@ -311,33 +311,435 @@
     </ol>
 </aside>
 
-            <main class="main full-width">
-<form action="/fpp/search/" class="search-form"data-json="/fpp/search/index.json">
-    <p>
-        <label>搜索</label>
-        <input name="keyword" placeholder="输入关键词..." />
-    </p>
+            <main class="main full-width"><header class="post-header">
+        <h1 class="post-title">Weather</h1>
+    </header>
+    
+    <div class="post-content" style="display: flex; justify-content: center; padding: 20px;">
+        
+        <link href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css" rel="stylesheet">
 
-    <button title="搜索">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
+        <style>
+     
 
+    .weather-card {
+      width: 280px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      position: relative;
+      margin: 0 auto;
+    }
+    .weather-card.expanded {
+       
+      width: 320px; 
+      cursor: default;
+    }
 
+     
+    .weather-small {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+    }
+    .w-left, .w-right { flex-shrink: 0; }
+    .w-mid { flex-grow: 1; margin-left: 10px; }
+    .weather-icon { font-size: 24px; }
+    .weather-city { font-size: 14px; font-weight: bold; }
+    .weather-now { font-size: 12px; opacity: 0.7; }
+    .weather-temp { font-size: 28px; font-weight: 300; }
 
-    </button>
-</form>
+     
+    .control-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 12px;
+      height: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 10px;
+      z-index: 10;
+    }
+    .control-btn:hover { opacity: 1; }
+    .expand-btn::after { content:""; width:8px; height:8px; border:2px solid #888; border-radius:4px; display:block; }  
+    .collapse-btn::after { content:""; width:10px; height:2px; background:#888; border-radius:1px; display:block; position: relative; top: 4px;  }  
 
-<div class="search-result">
-    <h3 class="search-result--title section-title"></h3>
-    <div class="search-result--list article-list--compact"></div>
+    .weather-card:not(.expanded) .expand-btn { display: block; }
+    .weather-card.expanded .expand-btn { display: none; }
+    .weather-card:not(.expanded) .collapse-btn { display: none; }
+    .weather-card.expanded .collapse-btn { display: block; }
+
+     
+    .weather-detailed {
+      display: none;
+      padding: 15px;
+    }
+    .weather-card.expanded .weather-detailed {
+      display: block;
+    }
+    .weather-card.expanded .weather-small {
+      display: none;
+    }
+
+     
+    .expanded-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .expanded-left { display: flex; align-items: center; }
+    .popup-icon { font-size: 28px; margin-right: 10px; }
+    .popup-city { font-size: 16px; font-weight: bold; }
+    .popup-desc { font-size: 13px; opacity: 0.7; }
+    .expanded-right { text-align: right; }
+    .popup-temp { font-size: 32px; font-weight: 300; line-height: 1; }
+    .popup-feel { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+
+     
+    .expanded-actions { margin-top: 10px; }
+    #city-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+    .popup-meta {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 8px;
+    }
+
+     
+
+     
+    .expanded-hourly-forecast { margin-top:10px; }
+    .hourly-forecast-list { 
+      display:flex; 
+      gap:8px; 
+      overflow-x:auto;  
+      padding-bottom:6px;  
+      white-space:nowrap;  
+      scrollbar-width: thin;  
+      scroll-snap-type: x mandatory;  
+    }
+     
+    .hourly-forecast-list::-webkit-scrollbar {
+        height: 4px;
+    }
+    .hourly-forecast-list::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+
+    .hourly-item {
+      min-width:56px; 
+      padding:6px 0; 
+      border-radius:6px; 
+      background:#f7f7f7; 
+      text-align:center; 
+      font-size:12px;
+      display:inline-block; 
+      scroll-snap-align: start;
+    }
+    .hi-icon { font-size:20px; margin:4px 0; }
+    .hi-temp { font-weight:600; }
+    .hi-time { font-size:11px; opacity:0.8; }
+
+     
+    .expanded-forecast { margin-top:10px; }
+    .forecast-list { display:block; padding:0; border:1px solid #eee; border-radius:6px; }
+    .forecast-day { 
+      display:flex; 
+      justify-content:space-between;
+      align-items:center;
+      padding:8px 10px; 
+      background:#fff; 
+      font-size:13px; 
+      border-bottom:1px solid #eee; 
+    }
+    .forecast-day:last-child { border-bottom:none; }
+    
+    .fd-date { flex:2; font-weight: bold; }  
+    .fd-desc { flex:3; text-align: left; opacity: 0.8; }  
+    .fd-icon { font-size:20px; margin:0 10px; flex-shrink: 0; }
+    .fd-temp { font-weight:700; width:60px; text-align:right; flex-shrink: 0; }  
+
+     
+    .expanded-indices {
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid #eee;
+    }
+    .index-item {
+      font-size:12px;
+      line-height:1.6;
+      opacity:0.9;
+    }
+    
+     
+    @media(max-width:440px){
+      .widget-weather {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+      }
+      .weather-card {
+        width: auto;
+      }
+      .weather-card.expanded {
+        width: auto;
+      }
+    }
+  </style>
+
+        <div class="widget widget-weather" id="widget-weather">
+  <div class="weather-card" id="weather-card">
+    
+    <div class="weather-small" id="weather-small">
+      <div class="w-left"><div id="weather-icon" class="weather-icon"></div></div>
+      <div class="w-mid">
+        <div id="weather-city" class="weather-city">--</div>
+        <div id="weather-now" class="weather-now">--</div>
+      </div>
+      <div class="w-right">
+        <div id="weather-temp" class="weather-temp">--°</div>
+      </div>
+      <div class="control-btn expand-btn" id="expand-btn" title="展开"></div>
+    </div>
+
+    <div class="weather-detailed hidden" id="weather-detailed">
+      <div class="control-btn collapse-btn" id="collapse-btn" title="收起"></div>
+      
+      <div class="expanded-header">
+        <div class="expanded-left">
+          <div id="popup-icon" class="popup-icon"></div>
+          <div class="expanded-text">
+            <div id="popup-city" class="popup-city">--</div>
+            <div id="popup-desc" class="popup-desc">--</div>
+          </div>
+        </div>
+        <div class="expanded-right">
+          <div class="popup-temp" id="popup-temp">--°</div>
+          <div class="popup-feel" id="popup-feel">体感 --°</div>
+        </div>
+      </div>
+
+      <div class="expanded-actions">
+        <input id="city-input" placeholder="输入城市名并回车切换城市"/>
+        <div class="popup-meta" id="popup-meta">湿度: --  风速: --</div>
+      </div>
+      
+      <div class="expanded-hourly-forecast">
+        <div class="hourly-forecast-list" id="hourly-forecast-list">
+          </div>
+      </div>
+
+      <div class="expanded-forecast">
+        <div class="forecast-list" id="forecast-list">
+          </div>
+      </div>
+      
+      <div class="expanded-indices" id="expanded-indices">
+        <div id="air-quality" class="index-item">空气质量：--</div>
+        <div id="uv-index" class="index-item">紫外线指数：--</div>
+        <div id="sunscreen-text" class="index-item">防晒建议：--</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script>
-    window.searchResultTitleTemplate = "#PAGES_COUNT 个结果 （用时 #TIME_SECONDS 秒）"
-</script><script type="text/javascript" src="/fpp/ts/search.js" defer></script>
+        <script>
+(function(){
+  const card = document.getElementById("weather-card");
+  const small = document.getElementById("weather-small");
+  const detailed = document.getElementById("weather-detailed");
+  const expandBtn = document.getElementById("expand-btn");
+  const collapseBtn = document.getElementById("collapse-btn");
+  const cityInput = document.getElementById("city-input");
+
+  
+  const iconEl = document.getElementById("weather-icon");
+  const cityEl = document.getElementById("weather-city");
+  const nowEl = document.getElementById("weather-now");
+  const tempEl = document.getElementById("weather-temp");
+  
+  
+  const popupCity = document.getElementById("popup-city");
+  const popupDesc = document.getElementById("popup-desc");
+  const popupTemp = document.getElementById("popup-temp");
+  const popupFeel = document.getElementById("popup-feel");
+  const popupMeta = document.getElementById("popup-meta");
+  const popupIcon = document.getElementById("popup-icon");
+  
+  
+  const hourlyForecastList = document.getElementById("hourly-forecast-list");
+  const forecastList = document.getElementById("forecast-list"); 
+  const airQualityEl = document.getElementById("air-quality");
+  const uvIndexEl = document.getElementById("uv-index");
+  const sunscreenTextEl = document.getElementById("sunscreen-text");
+
+
+  function fmtTemp(t){ return (t==null || t===undefined) ? "--°" : Math.round(t)+"°"; }
+  function fmtRangeTemp(min, max){
+    const minStr = (min!=null && min!==undefined) ? Math.round(min) : "--";
+    const maxStr = (max!=null && max!==undefined) ? Math.round(max) : "--";
+    return `${maxStr}/${minStr}°`;
+  }
+
+  
+
+  function renderNow(data){
+    if(!data) return;
+    cityEl.textContent = data.city||"--"; 
+    nowEl.textContent = data.info||"--"; 
+    tempEl.textContent = fmtTemp(data.temperature); 
+    iconEl.className = "weather-icon qi qi-"+data.icon; 
+    
+    
+    popupCity.textContent = data.city||"--"; 
+    popupDesc.textContent = data.info||"--"; 
+    popupTemp.textContent = fmtTemp(data.temperature);
+    popupFeel.textContent = "体感 "+(data.feel?fmtTemp(data.feel):"--");
+    popupMeta.textContent = `湿度: ${data.humidity??"--"}%  风速: ${data.wind??"--"}`;
+    popupIcon.className = "popup-icon qi qi-"+data.icon;
+  }
+  
+  
+
+  function renderHourly(hourlyForecasts){
+    hourlyForecastList.innerHTML = "";
+    if(!Array.isArray(hourlyForecasts)) return;
+    hourlyForecasts.forEach(h => {
+      const d = document.createElement("div");
+      d.className = "hourly-item";
+      
+      d.innerHTML = `<div class="hi-time">${h.time || "--:--"}</div>
+                     <div class="hi-icon qi qi-${h.icon || "100"}"></div>
+                     <div class="hi-temp">${fmtTemp(h.temp)}</div>`;
+      hourlyForecastList.appendChild(d);
+    });
+  }
+
+  
+
+  function renderDaily(dailyForecasts){
+    forecastList.innerHTML=""; 
+    if(!Array.isArray(dailyForecasts)) return;
+    dailyForecasts.forEach(day=>{
+      const d=document.createElement("div"); 
+      d.className="forecast-day";
+      
+      d.innerHTML=`<div class="fd-date">${day.date||""}</div>
+                   <div class="fd-desc">${day.text||""}</div>
+                   <div class="fd-icon qi qi-${day.icon||"100"}"></div>
+                   <div class="fd-temp">${fmtRangeTemp(day.min, day.max)}</div>`;
+      forecastList.appendChild(d);
+    });
+  }
+
+  
+
+  function renderIndices(data){
+    const air = data.air_quality || {};
+    const indices = data.weather_indices || {};
+    
+    
+    airQualityEl.textContent = `空气质量：${air.aqi??"--"} (${air.category??"--"})`;
+    
+    uvIndexEl.textContent = `紫外线指数：${indices.uvIndex??"--"} (${indices.uvCategory??"--"})`;
+    
+    sunscreenTextEl.textContent = `防晒建议：${indices.sunscreenText??"暂无建议"}`;
+  }
+
+
+  async function fetchWeatherByCity(city){
+    try{
+      const url = `http://127.0.0.1:5000/api/weather?city=${encodeURIComponent(city)}`;
+      const res = await fetch(url);
+      const j = await res.json();
+      if(res.status !== 200 || j.code) {
+        console.error("Weather API Error:", j.message || "Unknown error");
+        alert(`天气查询失败: ${j.message || "请检查后端服务是否运行正常"}`);
+        return;
+      }
+      renderNow(j);
+      renderDaily(j.daily_forecast||[]); 
+      renderHourly(j.hourly_forecast||[]); 
+      renderIndices(j); 
+    }catch(e){ 
+      console.error(e);
+      alert("无法连接到后端服务 (http://127.0.0.1:5000)");
+    }
+  }
+
+  async function fetchWeatherByCoords(lat, lon){
+    try{
+      const url = `http://127.0.0.1:5000/api/weather?lat=${lat}&lon=${lon}`;
+      const res = await fetch(url);
+      const j = await res.json();
+      if(res.status !== 200 || j.code) {
+        console.error("Weather API Error:", j.message || "Unknown error");
+        
+        fetchWeatherByCity("成都"); 
+        return;
+      }
+      renderNow(j);
+      renderDaily(j.daily_forecast||[]); 
+      renderHourly(j.hourly_forecast||[]); 
+      renderIndices(j); 
+    }catch(e){ 
+      console.error(e);
+      alert("无法连接到后端服务 (http://127.0.0.1:5000)");
+    }
+  }
+
+  
+  function initWeather() {
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        
+        pos => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+        
+        err => fetchWeatherByCity("成都")
+      );
+    } else {
+      
+      fetchWeatherByCity("成都");
+    }
+  }
+
+  
+  expandBtn.addEventListener("click", e=>{ card.classList.add("expanded"); e.stopPropagation(); });
+  small.addEventListener("click", ()=>{ card.classList.add("expanded"); }); 
+  collapseBtn.addEventListener("click", ()=>{ card.classList.remove("expanded"); });
+
+  cityInput.addEventListener("click", e=>e.stopPropagation()); 
+  cityInput.addEventListener("keydown", e=>{
+    if(e.key==="Enter"){
+      const c = cityInput.value.trim();
+      if(c) fetchWeatherByCity(c);
+    }
+  });
+
+  initWeather();
+})();
+</script>
+        
+        </div>
+
 
 <footer class="site-footer">
     <section class="copyright">
@@ -348,7 +750,6 @@
     
     
 </footer>
-
 
             </main>
         </div>

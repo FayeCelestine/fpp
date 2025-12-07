@@ -66,6 +66,8 @@
                 href="https://fayecelestine.github.io/fpp/archives/"
                 />
   </url><url>
+    <loc>https://fayecelestine.github.io/fpp/clock/</loc>
+  </url><url>
     <loc>https://fayecelestine.github.io/fpp/links/</loc>
   </url><url>
     <loc>https://fayecelestine.github.io/fpp/search/</loc>
@@ -81,6 +83,8 @@
                 hreflang="zh-cn"
                 href="https://fayecelestine.github.io/fpp/tags/"
                 />
+  </url><url>
+    <loc>https://fayecelestine.github.io/fpp/weather/</loc>
   </url><url>
     <loc>https://fayecelestine.github.io/fpp/%E5%85%B3%E4%BA%8E/</loc>
     <xhtml:link
