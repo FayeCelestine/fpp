@@ -324,16 +324,14 @@
      
      
     * {
-         
         box-sizing: border-box; 
     }
     
      
     .weather-card {
        
-        
+      width: 100%;
       max-width: 280px;
-      width: 100%;  
       background-color: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -346,8 +344,8 @@
     .weather-card.expanded {
        
        
+      width: 100%; 
       max-width: 320px; 
-      width: 100%;      
       cursor: default;
     }
 
@@ -444,7 +442,7 @@
       white-space:nowrap;  
       scrollbar-width: thin;  
       scroll-snap-type: x mandatory;  
-       
+      
        
       width: 100%; 
     }
@@ -504,6 +502,8 @@
     }
     
      
+     
+     
     @media(max-width:440px){
       .widget-weather {
         top: auto;
@@ -517,13 +517,13 @@
         max-width: 100%;
       }
       .weather-card.expanded {
-        width: 100%;
-        max-width: none;  
+         
+        width: 100%; 
+        max-width: none;
       }
-       
-      .hourly-forecast-list {
-           
-          width: 100%;
+      
+      .post-content {
+          padding: 10px 5px; 
       }
     }
   </style>
