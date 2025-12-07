@@ -319,29 +319,11 @@
         
         <link href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css" rel="stylesheet">
 
-<style>
+        <style>
      
-     
-     
-    * {
-         
-        box-sizing: border-box !important; 
-    }
 
-     
-    .post-content, .main-content {
-         
-        min-width: 0 !important;
-        overflow-x: hidden !important; 
-         
-        padding-left: 0 !important; 
-        padding-right: 0 !important;
-    }
-    
-     
     .weather-card {
-      width: 100% !important;  
-      max-width: 280px !important;  
+      width: 280px;
       background-color: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -349,13 +331,11 @@
       transition: all 0.3s ease-in-out;
       cursor: pointer;
       position: relative;
-       
-      margin: 0 !important; 
+
     }
     .weather-card.expanded {
        
-      width: 100% !important;  
-      max-width: 320px !important;  
+      width: 320px; 
       cursor: default;
     }
 
@@ -388,8 +368,8 @@
       z-index: 10;
     }
     .control-btn:hover { opacity: 1; }
-    .expand-btn::after { content:""; width:8px; height:8px; border:2px solid #888; border-radius:4px; display:block; }
-    .collapse-btn::after { content:""; width:10px; height:2px; background:#888; border-radius:1px; display:block; position: relative; top: 4px; }
+    .expand-btn::after { content:""; width:8px; height:8px; border:2px solid #888; border-radius:4px; display:block; }  
+    .collapse-btn::after { content:""; width:10px; height:2px; background:#888; border-radius:1px; display:block; position: relative; top: 4px;  }  
 
     .weather-card:not(.expanded) .expand-btn { display: block; }
     .weather-card.expanded .expand-btn { display: none; }
@@ -400,10 +380,6 @@
     .weather-detailed {
       display: none;
       padding: 15px;
-      
-       
-      min-width: 0 !important; 
-      overflow-x: hidden !important; 
     }
     .weather-card.expanded .weather-detailed {
       display: block;
@@ -449,19 +425,13 @@
      
     .expanded-hourly-forecast { margin-top:10px; }
     .hourly-forecast-list { 
-       
-      width: calc(100% + 30px) !important;  
-      margin-left: -15px !important;  
-      padding-left: 15px !important;  
-      padding-right: 15px !important;  
-      
       display:flex; 
       gap:8px; 
       overflow-x:auto;  
       padding-bottom:6px;  
       white-space:nowrap;  
-      scrollbar-width: thin; 
-      scroll-snap-type: x mandatory; 
+      scrollbar-width: thin;  
+      scroll-snap-type: x mandatory;  
     }
      
     .hourly-forecast-list::-webkit-scrollbar {
@@ -479,7 +449,7 @@
       background:#f7f7f7; 
       text-align:center; 
       font-size:12px;
-      flex-shrink: 0;
+      display:inline-block; 
       scroll-snap-align: start;
     }
     .hi-icon { font-size:20px; margin:4px 0; }
@@ -500,10 +470,10 @@
     }
     .forecast-day:last-child { border-bottom:none; }
     
-    .fd-date { flex:2; font-weight: bold; } 
-    .fd-desc { flex:3; text-align: left; opacity: 0.8; } 
+    .fd-date { flex:2; font-weight: bold; }  
+    .fd-desc { flex:3; text-align: left; opacity: 0.8; }  
     .fd-icon { font-size:20px; margin:0 10px; flex-shrink: 0; }
-    .fd-temp { font-weight:700; width:60px; text-align:right; flex-shrink: 0; } 
+    .fd-temp { font-weight:700; width:60px; text-align:right; flex-shrink: 0; }  
 
      
     .expanded-indices {
@@ -518,8 +488,6 @@
     }
     
      
-     
-     
     @media(max-width:440px){
       .widget-weather {
         top: auto;
@@ -527,19 +495,11 @@
         right: 10px;
         left: 10px;
       }
-       
-      .post-content {
-          padding-left: 0 !important; 
-          padding-right: 0 !important;
-          padding: 10px 0 !important;  
-      }
       .weather-card {
-        width: 100% !important; 
-        max-width: 100% !important;
+        width: auto;
       }
       .weather-card.expanded {
-        width: 100% !important; 
-        max-width: none !important;  
+        width: auto;
       }
     }
   </style>
