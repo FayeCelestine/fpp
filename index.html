@@ -2196,6 +2196,17 @@
     const tipsJsPath = "https://fayecelestine.github.io/fpp/waifu/waifu-tips.js";
 
     
+    function getCurrentScale() {
+        const windowWidth = window.innerWidth;
+        if (windowWidth <= 480) {
+            return 0.55; 
+        } else if (windowWidth <= 768) {
+            return 0.75; 
+        }
+        return 1; 
+    }
+
+    
     function loadExternalResource(url, type) {
         return new Promise((resolve, reject) => {
             let tag;
@@ -2247,11 +2258,9 @@
 
         if (!waifu || !live2dCanvas) return;
 
-        
         let isDown = false;
         let startX, startY;
         let startLeft, startTop;
-        
         let hasSwitchedToTopLeft = false; 
 
         
@@ -2259,23 +2268,28 @@
             isDown = true;
             startX = x;
             startY = y;
-
+            const currentScale = getCurrentScale();
+            
             if (!hasSwitchedToTopLeft) {
                 
-
+                
                 
                 const computedStyle = window.getComputedStyle(waifu);
                 const currentRight = parseFloat(computedStyle.right) || 0;
                 const currentBottom = parseFloat(computedStyle.bottom) || 0;
-
                 
-                startLeft = window.innerWidth - waifu.offsetWidth - currentRight;
-                startTop = window.innerHeight - waifu.offsetHeight - currentBottom;
+                
+                const actualWaifuWidth = waifu.offsetWidth * currentScale;
+                const actualWaifuHeight = waifu.offsetHeight * currentScale;
+                
+                
+                startLeft = window.innerWidth - actualWaifuWidth - currentRight;
+                startTop = window.innerHeight - actualWaifuHeight - currentBottom;
 
                 
                 waifu.style.right = 'auto'; 
                 waifu.style.bottom = 'auto'; 
-
+                
                 
                 waifu.style.setProperty('left', startLeft + 'px', 'important');
                 waifu.style.setProperty('top', startTop + 'px', 'important');
@@ -2283,10 +2297,8 @@
                 hasSwitchedToTopLeft = true; 
             } else {
                 
-
-                
-                startLeft = parseFloat(waifu.style.left) || waifu.offsetLeft;
-                startTop = parseFloat(waifu.style.top) || waifu.offsetTop;
+                startLeft = parseFloat(waifu.style.getPropertyValue('left'));
+                startTop = parseFloat(waifu.style.getPropertyValue('top'));
             }
         }
 
@@ -2298,17 +2310,39 @@
             let newTop = startTop + (y - startY);
 
             
-            const waifuWidth = waifu.offsetWidth;
-            const waifuHeight = waifu.offsetHeight;
+            const currentScale = getCurrentScale();
+            const W_orig = waifu.offsetWidth;
+            const H_orig = waifu.offsetHeight;
+            
+            
+            const Offset_X = W_orig * (1 - currentScale);
+            const Offset_Y = H_orig * (1 - currentScale);
+            
+            
+            const BOTTOM_OFFSET = 13; 
 
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - waifuWidth));
-            newTop = Math.max(30, Math.min(newTop, window.innerHeight - waifuHeight)); 
+            
+            
+            const L_min = -Offset_X; 
+            
+            const T_min = 30 - Offset_Y; 
+            
+            newLeft = Math.max(L_min, newLeft);
+            newTop = Math.max(T_min, newTop);
+
+            
+            
+            const L_max = window.innerWidth - W_orig;
+            
+            const T_max = window.innerHeight - H_orig + BOTTOM_OFFSET; 
+            
+            newLeft = Math.min(newLeft, L_max);
+            newTop = Math.min(newTop, T_max);
 
             waifu.style.setProperty('left', newLeft + "px", 'important');
             waifu.style.setProperty('top', newTop + "px", 'important');
         }
 
-        
         
         live2dCanvas.addEventListener("mousedown", (e) => {
             e.preventDefault();
@@ -2342,21 +2376,52 @@
 
     
     function autoScaleWaifu() {
-        const canvas = document.getElementById("waifu");
-        if (!canvas) return;
+        const waifu = document.getElementById("waifu");
+        if (!waifu) return;
 
-        let scale = 1; 
+        
+        let scale = getCurrentScale(); 
+        waifu.style.transform = `scale(${scale})`;
+        waifu.style.transformOrigin = "bottom right";  
 
-        if (window.innerWidth <= 480) {
-            scale = 0.55; 
-        } else if (window.innerWidth <= 768) {
-            scale = 0.75; 
+        
+        const isDragged = waifu.style.left && waifu.style.left !== 'auto';
+        
+        if (isDragged) {
+            
+
+            let newLeft = parseFloat(waifu.style.getPropertyValue('left'));
+            let newTop = parseFloat(waifu.style.getPropertyValue('top'));
+
+            
+            const currentScale = scale;
+            const W_orig = waifu.offsetWidth;
+            const H_orig = waifu.offsetHeight;
+            
+            
+            const Offset_X = W_orig * (1 - currentScale);
+            const Offset_Y = H_orig * (1 - currentScale);
+            
+            
+            const BOTTOM_OFFSET = 13; 
+
+            
+            const L_min = -Offset_X; 
+            const T_min = 30 - Offset_Y; 
+            
+            
+            const L_max = window.innerWidth - W_orig;
+            const T_max = window.innerHeight - H_orig + BOTTOM_OFFSET; 
+
+            
+            newLeft = Math.max(L_min, Math.min(newLeft, L_max));
+            newTop = Math.max(T_min, Math.min(newTop, T_max));
+
+            
+            waifu.style.setProperty('left', newLeft + "px", 'important');
+            waifu.style.setProperty('top', newTop + "px", 'important');
         }
-
-        canvas.style.transform = `scale(${scale})`;
-        canvas.style.transformOrigin = "bottom right";  
     }
-
 </script>
     </body>
 </html>
