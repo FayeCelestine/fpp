@@ -320,6 +320,21 @@
         <link href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css" rel="stylesheet">
 
         <style>
+           
+.hourly-forecast-list {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  white-space: nowrap !important;
+  scroll-behavior: smooth !important;
+}
+.hourly-forecast-list::-webkit-scrollbar { height:6px; }
+.hourly-forecast-list::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
+html, body, .site, .page, .main, .article, .article-content { overflow-x: visible !important; }
+@media (max-width: 480px) {
+  .weather-card, .widget-weather { width:100% !important; max-width:100% !important; margin:0 !important; padding:0 !important; }
+}
+
      
 
     .weather-card {
@@ -572,6 +587,32 @@
 </div>
 
 <script>
+  
+  (function(){ 
+    
+    setTimeout(function(){
+      const el = document.querySelector('.hourly-forecast-list');
+      if (!el) return;
+      
+      let node = el.parentElement;
+      while (node && node !== document.documentElement) {
+        const s = getComputedStyle(node);
+        if (s.overflowX === 'hidden' || s.overflow === 'hidden' || s.overflow === 'clip') {
+          node.style.overflowX = 'visible';
+          node.style.overflow = 'visible';
+        }
+        if (s.transform && s.transform !== 'none') {
+          
+          node.style.transform = 'none';
+        }
+        node = node.parentElement;
+      }
+      el.style['-webkit-overflow-scrolling'] = 'touch';
+      el.style.touchAction = 'pan-x';
+    }, 120);
+  })();
+
+
 (function(){
   
   const API_HOST_URL = "https://api.fayevalentinedev.com"; 
