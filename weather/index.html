@@ -324,13 +324,21 @@
      
      
     * {
-        box-sizing: border-box; 
+         
+        box-sizing: border-box !important; 
+    }
+
+     
+    .post-content, .main-content {
+         
+        min-width: 0 !important;
+        overflow-x: hidden !important; 
     }
     
      
     .weather-card {
-      width: 100%;  
-      max-width: 280px;  
+      width: 100% !important;  
+      max-width: 280px !important;  
       background-color: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -342,8 +350,8 @@
     }
     .weather-card.expanded {
        
-      width: 100%; 
-      max-width: 320px; 
+      width: 100% !important;  
+      max-width: 320px !important;  
       cursor: default;
     }
 
@@ -390,9 +398,8 @@
       padding: 15px;
       
        
-       
-      min-width: 0; 
-      overflow-x: hidden;  
+      min-width: 0 !important; 
+      overflow-x: hidden !important; 
     }
     .weather-card.expanded .weather-detailed {
       display: block;
@@ -439,18 +446,18 @@
     .expanded-hourly-forecast { margin-top:10px; }
     .hourly-forecast-list { 
        
-      width: calc(100% + 30px);  
-      margin-left: -15px;  
-      padding-left: 15px;  
-      padding-right: 15px;  
+      width: calc(100% + 30px) !important;  
+      margin-left: -15px !important;  
+      padding-left: 15px !important;  
+      padding-right: 15px !important;  
       
       display:flex; 
       gap:8px; 
       overflow-x:auto;  
       padding-bottom:6px;  
       white-space:nowrap;  
-      scrollbar-width: thin;  
-      scroll-snap-type: x mandatory;  
+      scrollbar-width: thin; 
+      scroll-snap-type: x mandatory; 
     }
      
     .hourly-forecast-list::-webkit-scrollbar {
@@ -515,16 +522,16 @@
         left: 10px;
       }
       .weather-card {
-        width: 100%; 
-        max-width: 100%;
+        width: 100% !important; 
+        max-width: 100% !important;
       }
       .weather-card.expanded {
-        width: 100%; 
-        max-width: none;
+        width: 100% !important; 
+        max-width: none !important;
       }
       
       .post-content {
-          padding: 10px 5px; 
+          padding: 10px 5px !important; 
       }
     }
   </style>
