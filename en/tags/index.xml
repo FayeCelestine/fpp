@@ -2,10 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Tags on Final Project Presentation</title>
-        <link>https://fayecelestine.github.io/fpp/en/tags/</link>
+        <link>https://fayevalentinedev.com/en/tags/</link>
         <description>Recent content in Tags on Final Project Presentation</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <copyright>SWUN student project</copyright><atom:link href="https://fayecelestine.github.io/fpp/en/tags/index.xml" rel="self" type="application/rss+xml" />
+        <copyright>SWUN student project</copyright><atom:link href="https://fayevalentinedev.com/en/tags/index.xml" rel="self" type="application/rss+xml" />
     </channel>
 </rss>

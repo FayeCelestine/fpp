@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Pages on Final Project Presentation</title>
-        <link>https://fayecelestine.github.io/fpp/en/page/</link>
+        <link>https://fayevalentinedev.com/en/page/</link>
         <description>Recent content in Pages on Final Project Presentation</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>SWUN student project</copyright>
-        <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://fayecelestine.github.io/fpp/en/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://fayevalentinedev.com/en/page/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Archives</title>
-        <link>https://fayecelestine.github.io/fpp/en/archives/</link>
+        <link>https://fayevalentinedev.com/en/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://fayecelestine.github.io/fpp/en/archives/</guid>
+        <guid>https://fayevalentinedev.com/en/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>About</title>
-        <link>https://fayecelestine.github.io/fpp/en/about/</link>
+        <link>https://fayevalentinedev.com/en/about/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://fayecelestine.github.io/fpp/en/about/</guid>
+        <guid>https://fayevalentinedev.com/en/about/</guid>
         <description>&lt;p&gt;This is a test page.&lt;/p&gt;
 </description>
         </item>

@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Categories on 期末项目展示</title>
-        <link>https://fayecelestine.github.io/fpp/categories/</link>
+        <link>https://fayevalentinedev.com/categories/</link>
         <description>Recent content in Categories on 期末项目展示</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>SWUN student project</copyright>
-        <lastBuildDate>Mon, 01 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://fayecelestine.github.io/fpp/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 01 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://fayevalentinedev.com/categories/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Test</title>
-        <link>https://fayecelestine.github.io/fpp/categories/test/</link>
+        <link>https://fayevalentinedev.com/categories/test/</link>
         <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://fayecelestine.github.io/fpp/categories/test/</guid>
-        <description>&lt;img src="https://fayecelestine.github.io/fpp/categories/test/hutomo-abrianto-l2jk-uxb1BY-unsplash.jpg" alt="Featured image of post Test" /&gt;</description>
+        <guid>https://fayevalentinedev.com/categories/test/</guid>
+        <description>&lt;img src="https://fayevalentinedev.com/categories/test/hutomo-abrianto-l2jk-uxb1BY-unsplash.jpg" alt="Featured image of post Test" /&gt;</description>
         </item>
         <item>
         <title>测试</title>
-        <link>https://fayecelestine.github.io/fpp/categories/%E6%B5%8B%E8%AF%95/</link>
+        <link>https://fayevalentinedev.com/categories/%E6%B5%8B%E8%AF%95/</link>
         <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://fayecelestine.github.io/fpp/categories/%E6%B5%8B%E8%AF%95/</guid>
+        <guid>https://fayevalentinedev.com/categories/%E6%B5%8B%E8%AF%95/</guid>
         <description></description>
         </item>
         
