@@ -333,6 +333,9 @@
          
         min-width: 0 !important;
         overflow-x: hidden !important; 
+         
+        padding-left: 0 !important; 
+        padding-right: 0 !important;
     }
     
      
@@ -346,7 +349,8 @@
       transition: all 0.3s ease-in-out;
       cursor: pointer;
       position: relative;
-      margin: 0 auto;
+       
+      margin: 0 !important; 
     }
     .weather-card.expanded {
        
@@ -514,6 +518,8 @@
     }
     
      
+     
+     
     @media(max-width:440px){
       .widget-weather {
         top: auto;
@@ -521,17 +527,19 @@
         right: 10px;
         left: 10px;
       }
+       
+      .post-content {
+          padding-left: 0 !important; 
+          padding-right: 0 !important;
+          padding: 10px 0 !important;  
+      }
       .weather-card {
         width: 100% !important; 
         max-width: 100% !important;
       }
       .weather-card.expanded {
         width: 100% !important; 
-        max-width: none !important;
-      }
-      
-      .post-content {
-          padding: 10px 5px !important; 
+        max-width: none !important;  
       }
     }
   </style>
