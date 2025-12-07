@@ -491,6 +491,10 @@
 
 <script>
 (function(){
+  
+  const API_HOST_URL = "http://8.137.155.196:5000"; 
+  
+
   const card = document.getElementById("weather-card");
   const small = document.getElementById("weather-small");
   const detailed = document.getElementById("weather-detailed");
@@ -541,7 +545,7 @@
     popupDesc.textContent = data.info||"--"; 
     popupTemp.textContent = fmtTemp(data.temperature);
     popupFeel.textContent = "体感 "+(data.feel?fmtTemp(data.feel):"--");
-    popupMeta.textContent = `湿度: ${data.humidity??"--"}%  风速: ${data.wind??"--"}`;
+    popupMeta.textContent = `湿度: ${data.humidity??"--"}%  风速: ${data.wind??"--"}`;
     popupIcon.className = "popup-icon qi qi-"+data.icon;
   }
   
@@ -595,42 +599,52 @@
 
   async function fetchWeatherByCity(city){
     try{
-      const url = `http://127.0.0.1:5000/api/weather?city=${encodeURIComponent(city)}`;
+      
+      const url = `${API_HOST_URL}/api/weather?city=${encodeURIComponent(city)}`;
       const res = await fetch(url);
       const j = await res.json();
+      
+      
       if(res.status !== 200 || j.code) {
-        console.error("Weather API Error:", j.message || "Unknown error");
-        alert(`天气查询失败: ${j.message || "请检查后端服务是否运行正常"}`);
-        return;
+        
+        return; 
       }
+      
       renderNow(j);
       renderDaily(j.daily_forecast||[]); 
       renderHourly(j.hourly_forecast||[]); 
       renderIndices(j); 
+      
     }catch(e){ 
-      console.error(e);
-      alert("无法连接到后端服务 (http://127.0.0.1:5000)");
+      
+      
+      return;
     }
   }
 
   async function fetchWeatherByCoords(lat, lon){
     try{
-      const url = `http://127.0.0.1:5000/api/weather?lat=${lat}&lon=${lon}`;
+      
+      const url = `${API_HOST_URL}/api/weather?lat=${lat}&lon=${lon}`;
       const res = await fetch(url);
       const j = await res.json();
+      
+      
       if(res.status !== 200 || j.code) {
-        console.error("Weather API Error:", j.message || "Unknown error");
         
         fetchWeatherByCity("成都"); 
-        return;
+        return; 
       }
+      
       renderNow(j);
       renderDaily(j.daily_forecast||[]); 
       renderHourly(j.hourly_forecast||[]); 
       renderIndices(j); 
+      
     }catch(e){ 
-      console.error(e);
-      alert("无法连接到后端服务 (http://127.0.0.1:5000)");
+      
+      fetchWeatherByCity("成都"); 
+      return; 
     }
   }
 
